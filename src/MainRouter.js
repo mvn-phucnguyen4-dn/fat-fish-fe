@@ -21,7 +21,7 @@ import EditTopic from './pages/EditTopic/EditTopic'
 const MainRouter = ({ token }) => {
   let routes
   const { isLoggedIn } = useContext(AuthContext)
-  console.log(isLoggedIn)
+
   if (isLoggedIn) {
     routes = (
       <>
