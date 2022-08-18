@@ -21,6 +21,7 @@ import EditTopic from './pages/EditTopic/EditTopic'
 const MainRouter = ({ token }) => {
   let routes
   const { isLoggedIn } = useContext(AuthContext)
+  console.log(isLoggedIn)
   if (isLoggedIn) {
     routes = (
       <>
@@ -98,9 +99,6 @@ const MainRouter = ({ token }) => {
           </Route>
           <Route path="/posts/:titleURL/:postId" exact>
             <Post />
-          </Route>
-          <Route path="/topics/:topicId" exact>
-            <EditTopic />
           </Route>
           <Redirect to="/auth" />
         </Switch>

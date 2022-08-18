@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom'
 import Avatar from '../../Avatar/Avatar'
 import { Dropdown } from '../Dropdown'
 import { useHistory } from 'react-router-dom'
-import { addTopicAPI } from '../../../utils/topicAPI'
+import { postDataApi } from '../../../utils/fetchDataApi'
 import { auth } from '../../../utils/initFirebase'
 
 export const LoggedInNavLinks = ({
@@ -41,7 +41,7 @@ export const LoggedInNavLinks = ({
         isPrivate: true,
         hashtagIds: [],
       }
-      const response = await addTopicAPI(topic, token)
+      const response = await postDataApi('topics', topic, token)
       if (response.data) {
         history.push(`/topics/${response.data.id}`)
       }

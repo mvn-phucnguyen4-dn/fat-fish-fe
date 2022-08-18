@@ -27,9 +27,6 @@ const EditUserProfile = () => {
         const responseData = await sendReq(
           `${process.env.REACT_APP_BASE_URL}/users/${userId}`,
         )
-        // if (currentUser.userId !== responseData.user.id) {
-        //   history.push("/");
-        // }
         prefillEditProfileForm(responseData.user)
         setUser(responseData.user)
         setForm(editProfileForm)

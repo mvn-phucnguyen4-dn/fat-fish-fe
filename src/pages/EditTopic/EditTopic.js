@@ -7,7 +7,7 @@ import { Row, Col, Button } from 'antd'
 import 'antd/dist/antd.min.css'
 import ReactDragListView from 'react-drag-listview'
 import { useParams } from 'react-router-dom'
-import { getTopicByIdAPI, updateTopicAPI } from '../../utils/topicAPI'
+import { getDataApi, putDataApi } from '../../utils/fetchDataApi'
 import { auth } from '../../utils/initFirebase'
 
 const EditTopic = () => {
@@ -23,10 +23,10 @@ const EditTopic = () => {
     isPrivate: false,
   })
 
-  useEffect(() => {
-    const getTopicById = async () => {
+  const fetchGetTopicById = async () => {
+    try {
       const token = await auth.currentUser.getIdToken()
-      const response = await getTopicByIdAPI(topicId, token)
+      const response = await getDataApi(`topics/${topicId}`, token)
       const {
         title,
         description,
@@ -45,17 +45,40 @@ const EditTopic = () => {
         totalScore,
         isPrivate,
       })
+
       setSections([...response.data.sections])
       setTags([...response.data.hashtags])
+    } catch (error) {
+      console.log(error)
     }
-    getTopicById()
+  }
+
+  const fetchUpdateTopic = async () => {
+    try {
+      const token = await auth.currentUser.getIdToken()
+      const response = await putDataApi(`topics/${topicId}`, topic, token)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    fetchGetTopicById()
   }, [topicId])
 
+  useEffect(() => {
+    const indentifier = setTimeout(() => {
+      fetchUpdateTopic()
+    }, 3000)
+    return () => {
+      clearTimeout(indentifier)
+    }
+  }, [topic, setTopic])
+
   const changeTopicTitle = (topicTitle) => {
-    setTopic((prev) => ({
-      ...prev,
-      title: topicTitle,
-    }))
+    setTopic((prev) => {
+      return { ...prev, title: topicTitle }
+    })
   }
 
   const changeTopicDescription = (topicDescription) => {
@@ -97,12 +120,11 @@ const EditTopic = () => {
 
   const addTag = (tag) => {
     const tagsTitle = tags.map((tag) => tag.title)
-
     if (!tagsTitle.includes(tag.title)) {
-      setTags((tags) => [...tags, tag])
+      setTags((prev) => [...prev, tag])
+      const hashtagIds = tags.map((hashtag) => hashtag.id)
+      setTopic((prev) => ({ ...prev, hashtagIds: [...hashtagIds, tag.id] }))
     }
-    const hashtagIds = tags.map((hashtag) => hashtag.id)
-    setTopic((prev) => ({ ...prev, hashtagIds }))
   }
 
   return (

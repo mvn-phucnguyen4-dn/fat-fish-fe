@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import './HashTagInput.css'
 import { Tag } from 'antd'
-import { addHashtagAPI, getHashtagAPI } from '../../../utils/hashtagAPI'
+import { postDataApi, getDataApi } from '../../../utils/fetchDataApi'
+import { auth } from '../../../utils/initFirebase'
 
 const COLORS = [
   'red',
@@ -30,16 +31,18 @@ const HashTagInput = (props) => {
   const { tags, removeTag, addTag } = props
 
   useEffect(() => {
-    const getHashtag = async () => {
-      const response = await getHashtagAPI()
+    const fetchGetHashtag = async () => {
+      const response = await getDataApi('hashtags')
       setTagInServer([...response.data])
     }
-    getHashtag()
+    fetchGetHashtag()
   }, [])
 
-  const addHashTag = async (tagTitle) => {
+  const fetchAddHashtag = async (tagTitle) => {
     try {
-      const response = addHashtagAPI(tagTitle)
+      const tag = { title: tagTitle, iconUrl: '' }
+      const token = await auth.currentUser.getIdToken()
+      const response = await postDataApi('hashtags', tag, token)
       return response.data
     } catch (error) {
       console.log(error)
@@ -53,7 +56,7 @@ const HashTagInput = (props) => {
       const tagsInServerTitle = tagInServer.map((tag) => tag.title)
 
       if (!tagsInServerTitle.includes(tagTitle)) {
-        const newTag = await addHashTag(tagTitle)
+        const newTag = await fetchAddHashtag(tagTitle)
         addTag(newTag)
         setTagInServer([...tagInServer, newTag])
       } else {
@@ -99,7 +102,6 @@ const HashTagInput = (props) => {
                 key={tag.id}
                 onClick={() => {
                   addTag(tag)
-                  console.log(tag)
                 }}
               >
                 {tag.title}
