@@ -4,6 +4,8 @@ import { NavLink } from 'react-router-dom'
 import Avatar from '../../Avatar/Avatar'
 import { Dropdown } from '../Dropdown'
 import { useHistory } from 'react-router-dom'
+import { addTopicAPI } from '../../../utils/topicAPI'
+import { auth } from '../../../utils/initFirebase'
 
 export const LoggedInNavLinks = ({
   unreadNotifications,
@@ -28,12 +30,32 @@ export const LoggedInNavLinks = ({
     setShowMenu(false)
     logout()
   }
+
+  const createTopic = async () => {
+    try {
+      const token = await auth.currentUser.getIdToken()
+      const topic = {
+        title: 'Topic title',
+        description: 'Topic description',
+        totalScore: 0,
+        isPrivate: true,
+        hashtagIds: [],
+      }
+      const response = await addTopicAPI(topic, token)
+      if (response.data) {
+        history.push(`/topics/${response.data.id}`)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <React.Fragment>
       <li className="list__item list__item--mobile item--create">
-        <NavLink className="create-link" to="/posts/new" exact>
+        <button className="create-link" onClick={createTopic}>
           Create Post
-        </NavLink>
+        </button>
       </li>
       <li
         className="list__item list__item--notifs hvr-bg-lt"

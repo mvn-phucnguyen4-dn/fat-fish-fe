@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './HashTagInput.css'
 import { Tag } from 'antd'
+import { addHashtagAPI, getHashtagAPI } from '../../../utils/hashtagAPI'
 
 const COLORS = [
   'red',
@@ -23,26 +24,38 @@ const ranColor = () => {
 }
 
 const HashTagInput = (props) => {
-  const [suggestTags, setSuggestTags] = useState([
-    { title: 'html', id: 1 },
-    { title: 'css', id: 2 },
-    { title: 'js', id: 3 },
-    { title: 'java', id: 4 },
-    { title: 'python', id: 5 },
-  ])
+  const [suggestTags, setSuggestTags] = useState([])
   const [tagInServer, setTagInServer] = useState([])
   const [isShowSuggest, setIsShowSuggest] = useState(false)
   const { tags, removeTag, addTag } = props
 
+  useEffect(() => {
+    const getHashtag = async () => {
+      const response = await getHashtagAPI()
+      setTagInServer([...response.data])
+    }
+    getHashtag()
+  }, [])
+
+  const addHashTag = async (tagTitle) => {
+    try {
+      const response = addHashtagAPI(tagTitle)
+      return response.data
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   const handleAddTag = async (e) => {
-    const tagTitle = e.target.value
+    const tagTitle = e.target.value.trim()
     if (tagTitle.length > MAX_LENGTH_TAG || tagTitle == '') return
     if (e.code === 'Enter' && tagTitle !== '') {
       const tagsInServerTitle = tagInServer.map((tag) => tag.title)
 
       if (!tagsInServerTitle.includes(tagTitle)) {
-        const newTag = await addHashTagAPI(tagTitle)
+        const newTag = await addHashTag(tagTitle)
         addTag(newTag)
+        setTagInServer([...tagInServer, newTag])
       } else {
         const tag = tagInServer.find((tag) => tag.title === tagTitle)
         addTag(tag)

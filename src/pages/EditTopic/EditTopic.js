@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import BasicInformation from '../../components/FormElements/BasicInformation/BasicInformation'
 import { PlusOutlined } from '@ant-design/icons'
 import Section from '../../components/Section/Section'
@@ -7,16 +7,13 @@ import { Row, Col, Button } from 'antd'
 import 'antd/dist/antd.min.css'
 import ReactDragListView from 'react-drag-listview'
 import { useParams } from 'react-router-dom'
+import { getTopicByIdAPI, updateTopicAPI } from '../../utils/topicAPI'
+import { auth } from '../../utils/initFirebase'
 
 const EditTopic = () => {
   const { topicId } = useParams()
-  const [sections, setSections] = useState([
-    { title: 'Section title', questionIds: [] },
-  ])
-  const [tags, setTags] = useState([
-    { title: 'tag 1', id: 1 },
-    { title: 'tag 2', id: 2 },
-  ])
+  const [sections, setSections] = useState([])
+  const [tags, setTags] = useState([])
   const [topic, setTopic] = useState({
     title: 'Topic title',
     description: 'Topic description',
@@ -25,6 +22,34 @@ const EditTopic = () => {
     totalScore: 0,
     isPrivate: false,
   })
+
+  useEffect(() => {
+    const getTopicById = async () => {
+      const token = await auth.currentUser.getIdToken()
+      const response = await getTopicByIdAPI(topicId, token)
+      const {
+        title,
+        description,
+        hashtags,
+        totalScore,
+        isPrivate,
+        releaseScore,
+      } = response.data
+      const hashtagIds = hashtags.map((hashtag) => hashtag.id)
+      setTopic({
+        ...topic,
+        title,
+        description,
+        hashtagIds,
+        releaseScore,
+        totalScore,
+        isPrivate,
+      })
+      setSections([...response.data.sections])
+      setTags([...response.data.hashtags])
+    }
+    getTopicById()
+  }, [topicId])
 
   const changeTopicTitle = (topicTitle) => {
     setTopic((prev) => ({
