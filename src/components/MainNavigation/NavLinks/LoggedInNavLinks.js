@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom'
 import Avatar from '../../Avatar/Avatar'
 import { Dropdown } from '../Dropdown'
 import { useHistory } from 'react-router-dom'
-import { postDataApi } from '../../../utils/fetchDataApi'
+import { fetchDataApi } from '../../../utils/fetchDataApi'
 import { auth } from '../../../utils/initFirebase'
 
 export const LoggedInNavLinks = ({
@@ -16,12 +16,10 @@ export const LoggedInNavLinks = ({
   const history = useHistory()
   const handleRedirect = useCallback((url) => history.push(url), [history])
   const [showMenu, setShowMenu] = useState(false)
-
   const handleClick = () => {
     setUnreadNotifications([])
     handleRedirect(`/users/${currentUser && currentUser.userId}/notifications`)
   }
-
   const handleDropdown = () => {
     setShowMenu((showMenu) => !showMenu)
   }
@@ -41,9 +39,9 @@ export const LoggedInNavLinks = ({
         isPrivate: true,
         hashtagIds: [],
       }
-      const response = await postDataApi('topics', topic, token)
+      const response = await fetchDataApi('topics', token, 'POST', topic)
       if (response.data) {
-        history.push(`/topics/${response.data.id}`)
+        history.push(`/topics/${203}/edit`)
       }
     } catch (error) {
       console.log(error)

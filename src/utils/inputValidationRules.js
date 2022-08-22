@@ -41,7 +41,9 @@ export function maxLengthRule(inputName, maxCharacters) {
 export function passwordMatchRule() {
   return createValidationRule(
     'passwordMatch',
-    `passwords do not match`,
-    (inputValue, formObj) => inputValue === formObj.password.value,
+    `Confirm password and password not same`,
+    (inputValue, formObj) => {
+      return inputValue === formObj.password.value
+    },
   )
 }

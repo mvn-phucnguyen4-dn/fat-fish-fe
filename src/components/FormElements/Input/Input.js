@@ -10,7 +10,6 @@ const Input = (props) => {
     id,
     rows,
     handleChange,
-    // handleBlur,
     errorMessage,
     isValid,
     value,
@@ -27,7 +26,6 @@ const Input = (props) => {
           id={id}
           key={label}
           onChange={handleChange}
-          // onBlur={handleBlur}
           value={value}
         />
       </>
@@ -40,7 +38,6 @@ const Input = (props) => {
         className="form__textarea"
         rows={rows || 3}
         onChange={handleChange}
-        // onBlur={handleBlur}
         value={value}
       />
     )
@@ -50,9 +47,6 @@ const Input = (props) => {
         {label}
       </label>
       {element}
-      {!touched && errorMessage && !isValid && (
-        <span className="input__error">{errorMessage}</span>
-      )}
     </div>
   )
 }

@@ -10,7 +10,6 @@ const NavLinks = ({
   setUnreadNotifications,
 }) => {
   const { isLoggedIn, currentUser, logout } = useContext(AuthContext)
-
   const handleSearchClick = () => {
     onSearchIconClick()
   }

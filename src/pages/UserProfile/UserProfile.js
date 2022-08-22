@@ -30,8 +30,6 @@ const UserProfile = () => {
         const responseData = await sendReq(
           `${process.env.REACT_APP_BASE_URL}/users/${userId}`,
         )
-        setUser(responseData.user)
-        // setPosts(responseData.posts);
       } catch (err) {}
     }
     fetchUser()

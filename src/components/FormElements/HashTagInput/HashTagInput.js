@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import './HashTagInput.css'
 import { Tag } from 'antd'
-import { postDataApi, getDataApi } from '../../../utils/fetchDataApi'
+import { fetchDataApi } from '../../../utils/fetchDataApi'
 import { auth } from '../../../utils/initFirebase'
+import { useHttpClient } from '../../../hooks/useHttpClient'
+import ErrorModal from '../../Modal/ErrorModal'
 
 const COLORS = [
   'red',
@@ -29,11 +31,17 @@ const HashTagInput = (props) => {
   const [tagInServer, setTagInServer] = useState([])
   const [isShowSuggest, setIsShowSuggest] = useState(false)
   const { tags, removeTag, addTag } = props
+  const { clearError, setError, error } = useHttpClient()
 
   useEffect(() => {
     const fetchGetHashtag = async () => {
-      const response = await getDataApi('hashtags')
-      setTagInServer([...response.data])
+      try {
+        const response = await fetchDataApi('hashtags', null, 'GET')
+        setTagInServer([...response.data])
+      } catch (error) {
+        setError(error.message)
+        console.log(error)
+      }
     }
     fetchGetHashtag()
   }, [])
@@ -42,10 +50,11 @@ const HashTagInput = (props) => {
     try {
       const tag = { title: tagTitle, iconUrl: '' }
       const token = await auth.currentUser.getIdToken()
-      const response = await postDataApi('hashtags', tag, token)
+      const response = await fetchDataApi('hashtags', token, 'POST', tag)
       return response.data
     } catch (error) {
       console.log(error)
+      setError(error.message)
     }
   }
 
@@ -82,17 +91,17 @@ const HashTagInput = (props) => {
 
   return (
     <>
+      <ErrorModal error={error} onClose={clearError} />
       <h4>{'Tag'}</h4>
-      <div
-        className="tags__input"
-        onClick={() => setIsShowSuggest(true)}
-        onBlur={() => setIsShowSuggest(false)}
-      >
+      <div className="tags__input" onClick={() => setIsShowSuggest(true)}>
         <input
           type="text"
           placeholder="Press enter to add tags"
           onKeyUp={handleAddTag}
           onChange={suggestTag}
+          onBlur={() => {
+            setIsShowSuggest(false)
+          }}
         />
         <div className={`dropdown-tag ${!isShowSuggest && 'hide-dropdown'}`}>
           {suggestTags &&

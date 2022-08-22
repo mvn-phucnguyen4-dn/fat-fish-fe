@@ -7,6 +7,7 @@ import {
   maxLengthRule,
   minLengthRule,
   requiredRule,
+  passwordMatchRule,
 } from './inputValidationRules'
 
 const createFormFieldConfig = (
@@ -110,10 +111,15 @@ export const signupForm = {
     ],
     key: '3',
   },
-  avatar: {
-    ...createFormFieldConfig('Avatar', 'avatar', 'file'),
-    validationRules: [requiredRule('avatar')],
-    key: '1',
+  confirmPassword: {
+    ...createFormFieldConfig('Confirm Password', 'confirmPassword', 'password'),
+    validationRules: [
+      requiredRule('confirmPassword'),
+      minLengthRule('confirmPassword', 6),
+      maxLengthRule('confirmPassword', 20),
+      passwordMatchRule(),
+    ],
+    key: '4',
   },
 }
 
@@ -121,7 +127,8 @@ export const signupForm = {
 const createLoginForm = () => {
   const form = {}
   for (let [key, value] of Object.entries(signupForm)) {
-    if (key !== 'name' && key !== 'avatar') form[key] = value
+    if (key !== 'name' && key !== 'avatar' && key !== 'confirmPassword')
+      form[key] = value
   }
   return form
 }

@@ -1,0 +1,19 @@
+.topic-square {
+  background-color: rgb(163, 168, 172);
+  width: 100%;
+  height: 20px;
+  border-radius: 10px 10px 0 0;
+}
+.topic-title {
+  background: #ffffff;
+  border-radius: 0 0 5px 5px;
+  padding: 10px 30px 30px 30px;
+}
+
+.hashtag {
+  margin-top: 20px;
+}
+
+.hashtag-item {
+  margin: 0 5px 5px 0;
+}

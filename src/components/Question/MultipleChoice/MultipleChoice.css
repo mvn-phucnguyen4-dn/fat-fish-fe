@@ -1,0 +1,16 @@
+.multi-choice {
+  background: #f4f9f9;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.btn-radio {
+  font-size: large;
+}
+
+.ant-checkbox-group-item {
+  display: flex;
+  margin-right: 0;
+  font-size: x-large;
+}

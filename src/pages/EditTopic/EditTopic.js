@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import BasicInformation from '../../components/FormElements/BasicInformation/BasicInformation'
 import { PlusOutlined } from '@ant-design/icons'
 import Section from '../../components/Section/Section'
@@ -7,11 +7,14 @@ import { Row, Col, Button } from 'antd'
 import 'antd/dist/antd.min.css'
 import ReactDragListView from 'react-drag-listview'
 import { useParams } from 'react-router-dom'
-import { getDataApi, putDataApi } from '../../utils/fetchDataApi'
+import { fetchDataApi } from '../../utils/fetchDataApi'
 import { auth } from '../../utils/initFirebase'
+import useHttpClient from '../../hooks/useHttpClient'
+import ErrorModal from '../../components/Modal/ErrorModal'
 
 const EditTopic = () => {
   const { topicId } = useParams()
+  const { setError, clearError, error } = useHttpClient()
   const [sections, setSections] = useState([])
   const [tags, setTags] = useState([])
   const [topic, setTopic] = useState({
@@ -26,38 +29,49 @@ const EditTopic = () => {
   const fetchGetTopicById = async () => {
     try {
       const token = await auth.currentUser.getIdToken()
-      const response = await getDataApi(`topics/${topicId}`, token)
-      const {
-        title,
-        description,
-        hashtags,
-        totalScore,
-        isPrivate,
-        releaseScore,
-      } = response.data
-      const hashtagIds = hashtags.map((hashtag) => hashtag.id)
-      setTopic({
-        ...topic,
-        title,
-        description,
-        hashtagIds,
-        releaseScore,
-        totalScore,
-        isPrivate,
-      })
-
-      setSections([...response.data.sections])
-      setTags([...response.data.hashtags])
+      const response = await fetchDataApi(`topics/${topicId}`, token, 'GET')
+      if (response.data) {
+        const {
+          title,
+          description,
+          hashtags,
+          totalScore,
+          isPrivate,
+          releaseScore,
+        } = response.data
+        const hashtagIds = hashtags.map((hashtag) => hashtag.id)
+        setTopic({
+          ...topic,
+          title,
+          description,
+          hashtagIds,
+          releaseScore,
+          totalScore,
+          isPrivate,
+        })
+        setSections([...response.data.sections])
+        setTags([...response.data.hashtags])
+      } else {
+        setError(response.message)
+      }
     } catch (error) {
-      console.log(error)
+      console.log(error.message)
+      setError(error.message)
     }
   }
 
-  const fetchUpdateTopic = async () => {
+  const fetchUpdateTopic = async (updateTopic) => {
     try {
+      console.log(topic, 'update')
       const token = await auth.currentUser.getIdToken()
-      const response = await putDataApi(`topics/${topicId}`, topic, token)
+      const response = await fetchDataApi(
+        `topics/${topicId}`,
+        token,
+        'PUT',
+        updateTopic,
+      )
     } catch (error) {
+      setError(error.message)
       console.log(error)
     }
   }
@@ -67,22 +81,21 @@ const EditTopic = () => {
   }, [topicId])
 
   useEffect(() => {
-    const indentifier = setTimeout(() => {
-      fetchUpdateTopic()
-    }, 3000)
-    return () => {
-      clearTimeout(indentifier)
-    }
-  }, [topic, setTopic])
+    const hashtagIds = tags.map((hashtag) => hashtag.id)
+    setTopic((prev) => ({ ...prev, hashtagIds: [...hashtagIds] }))
+  }, [tags])
 
   const changeTopicTitle = (topicTitle) => {
-    setTopic((prev) => {
-      return { ...prev, title: topicTitle }
-    })
+    const updateTopic = { ...topic, title: topicTitle }
+    fetchUpdateTopic(updateTopic)
+    setTopic(updateTopic)
   }
 
   const changeTopicDescription = (topicDescription) => {
-    setTopic((prev) => ({ ...prev, description: topicDescription }))
+    const updateTopic = { ...topic, description: topicDescription }
+    fetchUpdateTopic(updateTopic)
+    setTopic(updateTopic)
+    setTopic(updateTopic)
   }
 
   const changeSectionTitle = (e, index) => {
@@ -108,27 +121,30 @@ const EditTopic = () => {
   }
 
   const removeTag = (tagId) => {
-    setTags((prev) => {
-      const data = prev.filter((tag) => {
-        tag.id != tagId
-      })
-      return data
-    })
-    const hashtagIds = tags.map((hashtag) => hashtag.id)
-    setTopic((prev) => ({ ...prev, hashtagIds }))
+    const updateTags = tags.filter((tag) => tag.id != tagId)
+    const updateTagIds = updateTags.map((tag) => tag.id)
+    const updateTopic = { ...topic, hashtagIds: updateTagIds }
+    fetchUpdateTopic(updateTopic)
+    setTags(updateTags)
+    setTopic({ ...topic, hashtagIds: updateTagIds })
   }
 
   const addTag = (tag) => {
     const tagsTitle = tags.map((tag) => tag.title)
     if (!tagsTitle.includes(tag.title)) {
-      setTags((prev) => [...prev, tag])
-      const hashtagIds = tags.map((hashtag) => hashtag.id)
-      setTopic((prev) => ({ ...prev, hashtagIds: [...hashtagIds, tag.id] }))
+      const updateTags = [...tags, tag]
+      const updateTagIds = updateTags.map((tag) => tag.id)
+      const updateTopic = { ...topic, hashtagIds: updateTagIds }
+      fetchUpdateTopic(updateTopic)
+      setTags(updateTags)
+      setTopic({ ...topic, hashtagIds: updateTagIds })
     }
   }
 
   return (
     <>
+      {console.log(topic)}
+      <ErrorModal error={error} onClose={clearError} />
       <Row>
         <Col xs={0} sm={3} xl={5}></Col>
         <Col xs={24} sm={18} xl={14} className="new-topic">
@@ -140,6 +156,7 @@ const EditTopic = () => {
             hashtags={tags}
             addTag={addTag}
             removeTag={removeTag}
+            fetchUpdateTopic={fetchUpdateTopic}
           />
           <div className="new-topic-body">
             <ReactDragListView onDragEnd={onDragEnd} nodeSelector=".section">

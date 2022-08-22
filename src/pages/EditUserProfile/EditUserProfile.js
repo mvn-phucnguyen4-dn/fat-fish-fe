@@ -28,7 +28,6 @@ const EditUserProfile = () => {
           `${process.env.REACT_APP_BASE_URL}/users/${userId}`,
         )
         prefillEditProfileForm(responseData.user)
-        setUser(responseData.user)
         setForm(editProfileForm)
       } catch (err) {}
     }

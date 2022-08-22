@@ -12,9 +12,9 @@ const useAuth = () => {
 
   //useCallback((uid, token, expirationDate)
   const login = useCallback((user, expirationDate) => {
+    setUser(user)
     setToken(user.accessToken)
     setUserId(user.userId)
-    setUser(user)
 
     const tokenExpirationDate =
       expirationDate || new Date(new Date().getTime() + 1000 * 60 * 60)
@@ -26,9 +26,9 @@ const useAuth = () => {
         id: user.userId,
         accessToken: user.accessToken,
         refreshToken: user.refreshToken,
-        avatar: user.photoURL,
+        avatar: user.avatar,
         email: user.email,
-        name: user.displayName,
+        name: user.name,
         expiration: tokenExpirationDate.toISOString(),
       }),
     )
