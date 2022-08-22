@@ -62,7 +62,6 @@ const EditTopic = () => {
 
   const fetchUpdateTopic = async (updateTopic) => {
     try {
-      console.log(topic, 'update')
       const token = await auth.currentUser.getIdToken()
       const response = await fetchDataApi(
         `topics/${topicId}`,
@@ -143,7 +142,6 @@ const EditTopic = () => {
 
   return (
     <>
-      {console.log(topic)}
       <ErrorModal error={error} onClose={clearError} />
       <Row>
         <Col xs={0} sm={3} xl={5}></Col>
