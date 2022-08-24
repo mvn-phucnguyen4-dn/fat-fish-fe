@@ -18,6 +18,7 @@ import { AuthContext } from './context/auth'
 import { BrowserRouter as Router } from 'react-router-dom'
 import Topic from './pages/Topic/Topic'
 import EditTopic from './pages/EditTopic/EditTopic'
+import ListTopic from './pages/ListTopic/ListTopic'
 
 const MainRouter = ({ token }) => {
   let routes
@@ -29,6 +30,9 @@ const MainRouter = ({ token }) => {
         <Switch>
           <Route path="/" exact>
             <Home />
+          </Route>
+          <Route path="/users/topic" exact>
+            <ListTopic />
           </Route>
           <Route path="/topic/:topicId" exact>
             <Topic />
@@ -78,6 +82,9 @@ const MainRouter = ({ token }) => {
         <Switch>
           <Route path="/" exact>
             <Home />
+          </Route>
+          <Route path="/users/topic" exact>
+            <ListTopic />
           </Route>
           <Route path="/topic/:topicId" exact>
             <Topic />

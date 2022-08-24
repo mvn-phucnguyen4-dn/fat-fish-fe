@@ -23,7 +23,7 @@ const useAuth = () => {
     localStorage.setItem(
       'userData',
       JSON.stringify({
-        id: user.userId,
+        userId: user.userId,
         accessToken: user.accessToken,
         refreshToken: user.refreshToken,
         avatar: user.avatar,

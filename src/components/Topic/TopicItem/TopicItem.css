@@ -1,0 +1,23 @@
+.topic-item-show {
+  background: #f4f9f9;
+  border-radius: 5px;
+}
+
+.topic-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.test-title {
+  font-size: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+}
+
+.test-title a {
+  margin: 0;
+  color: black;
+}
