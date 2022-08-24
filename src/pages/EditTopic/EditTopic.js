@@ -70,6 +70,21 @@ const EditTopic = () => {
         updateTopic,
       )
     } catch (error) {
+      console.log(error.message)
+      setError(error.message)
+    }
+  }
+
+  const fetchPostSection = async () => {
+    try {
+      const token = await auth.currentUser.getIdToken()
+      const response = await fetchDataApi('sections', token, 'POST', {
+        topicId: parseInt(topicId),
+        title: 'Section title',
+        questionIds: [],
+      })
+      return response.data
+    } catch (error) {
       setError(error.message)
       console.log(error)
     }
@@ -94,19 +109,11 @@ const EditTopic = () => {
     const updateTopic = { ...topic, description: topicDescription }
     fetchUpdateTopic(updateTopic)
     setTopic(updateTopic)
-    setTopic(updateTopic)
   }
 
-  const changeSectionTitle = (e, index) => {
-    setSections((prev) => {
-      const sections = [...prev.sections]
-      sections[index].title = e.target.value
-      return [...sections]
-    })
-  }
-
-  const addSection = () => {
-    setSections((prev) => [...prev, ''])
+  const addSection = async () => {
+    const section = await fetchPostSection()
+    setSections((prev) => [...prev, section])
   }
 
   const onDragEnd = (fromIndex, toIndex) => {
@@ -140,6 +147,12 @@ const EditTopic = () => {
     }
   }
 
+  const changeTopicIsPrivate = (isPrivate) => {
+    const updateTopic = { ...topic, isPrivate }
+    fetchUpdateTopic(updateTopic)
+    setTopic(updateTopic)
+  }
+
   return (
     <>
       <ErrorModal error={error} onClose={clearError} />
@@ -155,16 +168,16 @@ const EditTopic = () => {
             addTag={addTag}
             removeTag={removeTag}
             fetchUpdateTopic={fetchUpdateTopic}
+            changeTopicIsPrivate={changeTopicIsPrivate}
+            isPrivate={topic.isPrivate}
           />
           <div className="new-topic-body">
             <ReactDragListView onDragEnd={onDragEnd} nodeSelector=".section">
               {sections &&
-                sections.map((section, index) => (
+                sections.map((section) => (
                   <Section
-                    key={index}
+                    key={section.id}
                     section={section}
-                    changeSectionTitle={changeSectionTitle}
-                    index={index}
                     topicId={topicId}
                   />
                 ))}

@@ -9,14 +9,11 @@
 .option-wrapper {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around;
   margin-bottom: 10px;
 }
 
 .list-option {
-  width: 60%;
-  position: relative;
-  padding-right: 30px;
+  width: 100%;
 }
 
 .answer-description {
@@ -52,7 +49,6 @@
   padding: 10px;
   border: none;
   outline: none;
-  border-bottom: 1px solid #999;
   box-sizing: border-box;
   font-size: 16px;
   position: relative;
@@ -95,6 +91,11 @@
   justify-content: space-between;
 }
 
+.answer-key {
+  gap: 10px;
+  display: flex;
+  align-items: center;
+}
 .delete-question {
   font-size: 3rem;
 }

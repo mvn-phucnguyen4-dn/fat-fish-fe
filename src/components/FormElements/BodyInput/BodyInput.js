@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import SimpleMDE from 'react-simplemde-editor'
 import 'easymde/dist/easymde.min.css'
 
@@ -10,16 +10,28 @@ export const BodyInput = (props) => {
     setValue(props.value)
   }, [props.value])
 
+  const autofocusNoSpellcheckerOptions = useMemo(() => {
+    return {
+      spellChecker: false,
+      maxHeight: maxHeight || '100px',
+      hideIcons: hideIcons,
+    }
+  }, [])
+
   const onChange = (value) => {
     setValue(value)
-    props.onChange(value)
+  }
+
+  const onBlur = () => {
+    props.handleChange(value)
   }
 
   return (
     <SimpleMDE
       value={value}
       onChange={onChange}
-      options={{ hideIcons: hideIcons, maxHeight: maxHeight || '100px' }}
+      onBlur={onBlur}
+      options={autofocusNoSpellcheckerOptions}
     />
   )
 }

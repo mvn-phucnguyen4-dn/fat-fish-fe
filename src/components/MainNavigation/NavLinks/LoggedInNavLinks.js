@@ -41,7 +41,7 @@ export const LoggedInNavLinks = ({
       }
       const response = await fetchDataApi('topics', token, 'POST', topic)
       if (response.data) {
-        history.push(`/topics/${203}/edit`)
+        history.push(`/topics/${1}/edit`)
       }
     } catch (error) {
       console.log(error)

@@ -2,123 +2,219 @@ import React, { useEffect, useState } from 'react'
 import { BodyInput } from '../FormElements/BodyInput/BodyInput'
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
 import styles from './Question.module.css'
-import { Select, InputNumber, Button } from 'antd'
+import { Select, InputNumber, Button, Switch } from 'antd'
 import AnswerKeyModal from '../Modal/AnswerKeyModel'
+import { auth } from '../../utils/initFirebase'
+import { fetchDataApi } from '../../utils/fetchDataApi'
+import useHttpClient from '../../hooks/useHttpClient'
+import ErrorModal from '../Modal/ErrorModal'
 
 const { Option } = Select
-const MULTIPLE_CHOICE = 'multi_choice'
-const TEXT_ANSWER = 'short_answer'
+const TYPE_MULTIPLE_CHOICE = 'multi_choice'
+const TYPE_TEXT_ANSWER = 'short_answer'
 const MAX_OPTION = 5
-const hideIcons = [
-  'heading',
-  'quote',
-  'preview',
-  'fullscreen',
-  'side-by-side',
-  'image',
-]
 
 const Question = (props) => {
-  const [options, setOptions] = useState(['New option 1'])
   const [showModal, setShowModal] = useState(false)
-  const [type, setType] = useState(MULTIPLE_CHOICE)
-  const [point, setPoint] = useState(0)
   const [question, setQuestion] = useState({})
-  const { removeQuestion, index } = props
+  const [answers, setAnswers] = useState([])
+  const { removeQuestion, id: questionId, updateQuestions } = props
+  const { setError, clearError, error } = useHttpClient()
 
   useEffect(() => {
-    setQuestion({ ...props.question })
+    const { description, title, imageUrl, score, type, isPrivate } =
+      props.question
+    setQuestion({ description, title, imageUrl, score, type, isPrivate })
+
+    const newAnswers =
+      props.question.answers &&
+      props.question.answers.map((answer) => {
+        return {
+          questionId: answer.questionId,
+          answer: answer.answer,
+          isRight: answer.isRight,
+        }
+      })
+
+    if (newAnswers) setAnswers([...newAnswers])
   }, [props.question])
-  const changeType = (e) => {
-    setType(e)
+
+  const fetchUpdateQuestion = async (updateQuestion) => {
+    try {
+      const token = await auth.currentUser.getIdToken()
+      const response = await fetchDataApi(
+        `questions/${questionId}`,
+        token,
+        'PUT',
+        updateQuestion,
+      )
+      if (response.data) {
+        updateQuestions(response.data)
+      }
+    } catch (error) {
+      console.log(error)
+      setError(error.message)
+    }
   }
 
-  const changePoint = (e) => {
-    setPoint(e.target.value)
+  const fetchUpdateQuestionAnswer = async (updateAnswers) => {
+    try {
+      const token = await auth.currentUser.getIdToken()
+      const response = await fetchDataApi(
+        `questions/${questionId}/answers`,
+        token,
+        'PUT',
+        { answers: updateAnswers },
+      )
+      return response.data
+    } catch (error) {
+      console.log(error)
+      setError(error.message)
+    }
   }
 
-  const changeOption = (e, index) => {
-    setOptions((options) => {
-      const data = [...options]
-      data[index] = e.target.value
+  const changeType = (type) => {
+    const updateQuestion = { ...question, type }
+    fetchUpdateQuestion(updateQuestion)
+    setQuestion((prev) => {
+      return { ...prev, type }
+    })
+  }
+
+  const changeScore = (score) => {
+    const updateQuestion = { ...question, score }
+    fetchUpdateQuestion(updateQuestion)
+    setQuestion((prev) => {
+      return { ...prev, score }
+    })
+  }
+
+  const changeAnswer = (e, index) => {
+    setAnswers((answer) => {
+      const data = [...answer]
+      data[index].answer = e.target.value
       return data
     })
   }
 
   const changeTitle = (title) => {
+    const updateQuestion = { ...question, title }
+    fetchUpdateQuestion(updateQuestion)
     setQuestion((prev) => {
       return { ...prev, title }
     })
   }
 
   const changeDescription = (description) => {
+    const updateQuestion = { ...question, description }
+    fetchUpdateQuestion(updateQuestion)
     setQuestion((prev) => {
       return { ...prev, description }
     })
   }
 
+  const changeIsPrivate = (isPrivate) => {
+    const updateQuestion = { ...question, isPrivate }
+    fetchUpdateQuestion(updateQuestion)
+    setQuestion((prev) => {
+      return { ...prev, isPrivate }
+    })
+  }
   const handleRemoveQuestion = () => {
-    removeQuestion(index)
+    removeQuestion(question.id)
   }
 
-  const removeOption = (e, index) => {
-    setOptions((options) => options.filter((option, i) => i !== index))
+  const removeAnswer = async (e, index) => {
+    const updateAnswers = answers.filter((answer, i) => i !== index)
+    const answer = await fetchUpdateQuestionAnswer(updateAnswers)
+    setAnswers([...updateAnswers])
   }
 
-  const addOption = () => {
-    if (options.length < 5) setOptions((options) => [...options, 'New option'])
+  const addAnswer = async () => {
+    if (answers.length < 5) {
+      const updateAnswers = [
+        ...answers,
+        { questionId, answer: 'New option', isRight: false },
+      ]
+      const answer = await fetchUpdateQuestionAnswer(updateAnswers)
+      setAnswers((prev) => {
+        return [...updateAnswers]
+      })
+    }
+  }
+
+  const changeIsRight = async (answer) => {
+    const updateAnswers = answers.map((item) => {
+      if (item.answer === answer) return { ...item, isRight: true }
+      return { ...item, isRight: false }
+    })
+
+    await fetchUpdateQuestionAnswer(updateAnswers)
+    setAnswers((prev) => {
+      return [...updateAnswers]
+    })
+  }
+
+  const blurAnswer = async (e, index) => {
+    const updateAnswers = [...answers]
+    updateAnswers[index].answer = e.target.value.trim()
+    const answer = await fetchUpdateQuestionAnswer(updateAnswers)
+    setAnswers((prev) => {
+      return [...updateAnswers]
+    })
   }
 
   return (
     <>
+      <ErrorModal error={error} onClose={clearError} />
       <AnswerKeyModal
         onClose={() => setShowModal(false)}
         show={showModal}
-        question={{ title: question.title, answers: options }}
-        idx={1}
+        questionTitle={question.title}
+        questionId={questionId}
+        answers={answers}
+        changeIsRight={changeIsRight}
       ></AnswerKeyModal>
       <div className={`${styles['question-multiple-choice']}`}>
         <BodyInput value={question.title} handleChange={changeTitle} />
-        {type === MULTIPLE_CHOICE && (
+        <BodyInput
+          value={question.description}
+          handleChange={changeDescription}
+        />
+        {question.type === TYPE_MULTIPLE_CHOICE && (
           <div className={styles['option-wrapper']}>
             <div className={styles['list-option']}>
-              {options &&
-                options.map((option, index) => (
+              {answers &&
+                answers.map((answer, index) => (
                   <div className={`${styles['option']}`} key={index}>
                     <input type="radio" className={styles['radio']} />
                     <div className={styles['brise-input']}>
                       <input
                         type="text"
                         name="text"
-                        value={options[index]}
-                        onChange={(e) => changeOption(e, index)}
+                        value={answer.answer}
+                        onChange={(e) => changeAnswer(e, index)}
+                        onBlur={(e) => blurAnswer(e, index)}
                       />
                       <span className={styles.line}></span>
                     </div>
-                    {options.length > 1 && (
-                      <DeleteOutlined onClick={(e) => removeOption(e, index)} />
+                    {answers.length > 1 && (
+                      <DeleteOutlined onClick={(e) => removeAnswer(e, index)} />
                     )}
                   </div>
                 ))}
               <Button
                 icon={<PlusOutlined />}
-                onClick={addOption}
+                onClick={addAnswer}
                 className={styles['add-option']}
-                disabled={options.length === MAX_OPTION}
-              />
-            </div>
-            <div className={styles['answer-description']}>
-              <BodyInput
-                value={question.description}
-                handleChange={changeDescription}
-                hideIcons={hideIcons}
+                disabled={answers.length === MAX_OPTION}
               />
             </div>
           </div>
         )}
         <div className={styles['question-footer']}>
           <div className={styles['answer-key']}>
-            {type === MULTIPLE_CHOICE && (
+            {question.type === TYPE_MULTIPLE_CHOICE && (
               <Button
                 color="rgb(24 144 255)"
                 onClick={(e) => {
@@ -128,6 +224,7 @@ const Question = (props) => {
                 Answer key
               </Button>
             )}
+            <Switch checked={question.isPrivate} onChange={changeIsPrivate} />
           </div>
           <div className={styles['action']}>
             <Button
@@ -135,16 +232,20 @@ const Question = (props) => {
               className={styles['delete-question']}
               onClick={handleRemoveQuestion}
             />
-            <Select style={{ width: 120 }} onChange={changeType} value={type}>
-              <Option value="multiple_choice">Multiple choice</Option>
-              <Option value="short_answer">Text answer</Option>
+            <Select
+              style={{ width: 120 }}
+              onChange={changeType}
+              value={question.type}
+            >
+              <Option value={TYPE_MULTIPLE_CHOICE}>Multiple choice</Option>
+              <Option value={TYPE_TEXT_ANSWER}>Text answer</Option>
             </Select>
             <InputNumber
-              min={0.0}
+              min={0}
               max={10}
-              step={0.5}
-              value={point}
-              onChange={changePoint}
+              step={1}
+              value={question.score}
+              onChange={changeScore}
             ></InputNumber>
           </div>
         </div>

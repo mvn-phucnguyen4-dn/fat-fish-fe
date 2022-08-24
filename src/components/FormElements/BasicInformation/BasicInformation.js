@@ -2,11 +2,17 @@ import React, { useEffect, useState } from 'react'
 import './BasicInformation.css'
 import TextareaAutosize from 'react-textarea-autosize'
 import HashTagInput from '../HashTagInput/HashTagInput'
+import { Switch } from 'antd'
 
 const BasicInformation = (props) => {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-  const { changeTopicTitle, changeTopicDescription } = props
+  const {
+    changeTopicTitle,
+    changeTopicDescription,
+    isPrivate,
+    changeTopicIsPrivate,
+  } = props
 
   useEffect(() => {
     setTitle(props.title)
@@ -29,11 +35,21 @@ const BasicInformation = (props) => {
     changeTopicDescription(description)
   }
 
+  const changeIsPrivate = (isPrivate) => {
+    changeTopicIsPrivate(isPrivate)
+  }
+
   return (
     <>
       <div className="topic-square"></div>
       <div className="basic-informatin">
-        <h1>Create a topic</h1>
+        <div className="head-topic">
+          <h1>Create a topic</h1>
+          <p>
+            Set private for topic:{' '}
+            <Switch checked={isPrivate} onChange={changeIsPrivate} />
+          </p>
+        </div>
         <TextareaAutosize
           rows={1}
           className="title-topic"
