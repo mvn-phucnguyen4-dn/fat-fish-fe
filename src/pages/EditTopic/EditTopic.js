@@ -3,7 +3,7 @@ import BasicInformation from '../../components/FormElements/BasicInformation/Bas
 import { PlusOutlined } from '@ant-design/icons'
 import Section from '../../components/Section/Section'
 import './EditTopic.css'
-import { Row, Col, Button } from 'antd'
+import { Row, Col, Button, Tooltip } from 'antd'
 import 'antd/dist/antd.min.css'
 import ReactDragListView from 'react-drag-listview'
 import { useParams } from 'react-router-dom'
@@ -70,7 +70,6 @@ const EditTopic = () => {
       )
     } catch (error) {
       setError(error.message)
-<<<<<<< HEAD
     }
   }
 
@@ -85,8 +84,6 @@ const EditTopic = () => {
       return response.data
     } catch (error) {
       setError(error.message)
-=======
->>>>>>> 3dc8045af79fcc4c187ce5eb63b863f50b70301c
     }
   }
 
@@ -182,13 +179,19 @@ const EditTopic = () => {
                   />
                 ))}
             </ReactDragListView>
-            <Button
-              icon={<PlusOutlined />}
-              onClick={addSection}
-              className="add-section"
-            />
+            <Tooltip
+              placement="left"
+              title="Add section"
+              color="rgb(24 144 255)"
+            >
+              <Button
+                icon={<PlusOutlined />}
+                onClick={addSection}
+                className="add-section"
+              />
+            </Tooltip>
           </div>
-          <Button className="btn" type="button">
+          <Button>
             Submit <span>&rarr;</span>
           </Button>
         </Col>

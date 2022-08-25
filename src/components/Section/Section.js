@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Question from '../NewQuestion/Question'
 import TextareaAutosize from 'react-textarea-autosize'
-import { Button } from 'antd'
+import { Button, Tooltip } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import './Section.css'
 import { fetchDataApi } from '../../utils/fetchDataApi'
@@ -124,11 +124,13 @@ const Section = (props) => {
               updateQuestions={updateQuestions}
             />
           ))}
-        <Button
-          icon={<PlusOutlined />}
-          className="add-question"
-          onClick={addQuestion}
-        />
+        <Tooltip placement="left" title="Add question" color="rgb(24 144 255)">
+          <Button
+            icon={<PlusOutlined />}
+            className="add-question"
+            onClick={addQuestion}
+          />
+        </Tooltip>
       </div>
     </>
   )

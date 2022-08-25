@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { BodyInput } from '../FormElements/BodyInput/BodyInput'
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
 import styles from './Question.module.css'
-import { Select, InputNumber, Button, Switch } from 'antd'
+import { Select, InputNumber, Button, Switch, Tooltip } from 'antd'
 import AnswerKeyModal from '../Modal/AnswerKeyModel'
 import { auth } from '../../utils/initFirebase'
 import { fetchDataApi } from '../../utils/fetchDataApi'
@@ -197,16 +197,30 @@ const Question = (props) => {
                       <span className={styles.line}></span>
                     </div>
                     {answers.length > 1 && (
-                      <DeleteOutlined onClick={(e) => removeAnswer(e, index)} />
+                      <Tooltip
+                        placement="bottom"
+                        title="Remove option"
+                        color="rgb(24 144 255)"
+                      >
+                        <DeleteOutlined
+                          onClick={(e) => removeAnswer(e, index)}
+                        />
+                      </Tooltip>
                     )}
                   </div>
                 ))}
-              <Button
-                icon={<PlusOutlined />}
-                onClick={addAnswer}
-                className={styles['add-option']}
-                disabled={answers.length === MAX_OPTION}
-              />
+              <Tooltip
+                placement="right"
+                title="Add option"
+                color="rgb(24 144 255)"
+              >
+                <Button
+                  icon={<PlusOutlined />}
+                  onClick={addAnswer}
+                  className={styles['add-option']}
+                  disabled={answers.length === MAX_OPTION}
+                />
+              </Tooltip>
             </div>
           </div>
         )}
@@ -222,14 +236,26 @@ const Question = (props) => {
                 Answer key
               </Button>
             )}
-            <Switch checked={question.isPrivate} onChange={changeIsPrivate} />
+            <Tooltip
+              placement="top"
+              title={`${!question.isPrivate ? 'Open' : 'Close'} question`}
+              color="rgb(24 144 255)"
+            >
+              <Switch checked={question.isPrivate} onChange={changeIsPrivate} />
+            </Tooltip>
           </div>
           <div className={styles['action']}>
-            <Button
-              icon={<DeleteOutlined />}
-              className={styles['delete-question']}
-              onClick={handleRemoveQuestion}
-            />
+            <Tooltip
+              placement="top"
+              title="Remove question"
+              color="rgb(24 144 255)"
+            >
+              <Button
+                icon={<DeleteOutlined />}
+                className={styles['delete-question']}
+                onClick={handleRemoveQuestion}
+              />
+            </Tooltip>
             <Select
               style={{ width: 120 }}
               onChange={changeType}
