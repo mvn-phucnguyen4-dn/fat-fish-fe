@@ -22,15 +22,17 @@ export const BodyInput = (props) => {
       spellChecker: false,
       maxHeight: maxHeight || '100px',
       hideIcons: hideIcons,
-      toolbar,
     }
   }, [])
   useEffect(() => {
     setValue(props.value)
   }, [props.value])
-
-  const onBlur = () => {
+  const onfocus = () => {
     setIsBlur(true)
+  }
+  const onBlur = () => {
+    setIsBlur(false)
+
     const answerIndex = props.pushData.findIndex(
       (item) => item.questionId === props.question.id,
     )
@@ -60,7 +62,9 @@ export const BodyInput = (props) => {
       value={value}
       onBlur={onBlur}
       onChange={onChange}
+      onFocus={onfocus}
       options={autofocusNoSpellcheckerOptions}
+      toolbar={toolbar ? toolbar : false}
     />
   )
 }
