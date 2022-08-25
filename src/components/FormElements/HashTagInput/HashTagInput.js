@@ -1,26 +1,9 @@
 import React, { useState } from 'react'
 import './HashTagInput.css'
+import { ranColor } from '../../../utils/commonFunc'
 import { Tag } from 'antd'
 
-const COLORS = [
-  'red',
-  'magenta',
-  'volcano',
-  'orange',
-  'gold',
-  'lime',
-  'green',
-  'cyan',
-  'blue',
-  'geekblue',
-  'purple',
-]
-
 const MAX_LENGTH_TAG = 20
-const ranColor = () => {
-  const ranIndex = Math.floor(Math.random() * COLORS.length)
-  return COLORS[ranIndex]
-}
 
 const HashTagInput = (props) => {
   const [suggestTags, setSuggestTags] = useState([

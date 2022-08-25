@@ -22,7 +22,6 @@ function Quiz() {
           `topics/${topicId}`,
           currentUser.accessToken,
         )
-
         response && setData(response.data)
       } catch (error) {
         setError(error.message)
@@ -39,7 +38,7 @@ function Quiz() {
           {data && (
             <>
               <TopicHeader topic={data} />
-              <TopicBody sections={data.sections} />
+              <TopicBody sections={data.sections} topic={data} />
             </>
           )}
         </Col>

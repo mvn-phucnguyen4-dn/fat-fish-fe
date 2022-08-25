@@ -1,25 +1,66 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import SimpleMDE from 'react-simplemde-editor'
 import 'easymde/dist/easymde.min.css'
 
 export const BodyInput = (props) => {
   const [value, setValue] = useState('')
+  const [isBlur, setIsBlur] = useState(false)
   const { hideIcons, maxHeight } = props
-
+  const toolbar = isBlur
+    ? [
+        'bold',
+        'italic',
+        'fullscreen',
+        'table',
+        'code',
+        'unordered-list',
+        'clean-block',
+      ]
+    : false
+  const autofocusNoSpellcheckerOptions = useMemo(() => {
+    return {
+      spellChecker: false,
+      maxHeight: maxHeight || '100px',
+      hideIcons: hideIcons,
+      toolbar,
+    }
+  }, [])
   useEffect(() => {
     setValue(props.value)
   }, [props.value])
 
-  const onChange = (value) => {
-    setValue(value)
-    props.onChange(value)
+  const onBlur = () => {
+    setIsBlur(true)
+    const answerIndex = props.pushData.findIndex(
+      (item) => item.questionId === props.question.id,
+    )
+    if (answerIndex !== -1) {
+      props.pushData[answerIndex].answer_text = value
+      props.setPushData(props.pushData)
+    } else {
+      props.setPushData((prev) => [
+        ...prev,
+        {
+          topicId: props.topic,
+          sectionId: props.section,
+          questionId: props.question.id,
+          answerText: value,
+          answerId: null,
+        },
+      ])
+    }
   }
 
+  const onChange = (e) => {
+    setValue(e)
+  }
+  console.log('set is blur', isBlur)
   return (
     <SimpleMDE
       value={value}
+      onBlur={onBlur}
       onChange={onChange}
-      options={{ hideIcons: hideIcons, maxHeight: maxHeight || '100px' }}
+      options={autofocusNoSpellcheckerOptions}
     />
   )
 }

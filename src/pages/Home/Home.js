@@ -4,6 +4,7 @@ import RightSideBar from '../../components/RightSideBar/RightSideBar'
 import LeftSideBar from '../../components/LeftSideBar/LeftSideBar'
 import useHttpClient from '../../hooks/useHttpClient'
 import Banner from '../../components/Banner/Banner'
+import ShowTopic from '../../components/middle/ShowTopic'
 
 const Home = () => {
   const [tags, setTags] = useState([])
@@ -16,6 +17,7 @@ const Home = () => {
         <div className="container-sidebar">
           <LeftSideBar />
         </div>
+        <ShowTopic />
         <Posts cover={true} />
         <RightSideBar tags={tags} isLoading={isLoading} />
       </div>

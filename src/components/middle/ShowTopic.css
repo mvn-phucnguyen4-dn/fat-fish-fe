@@ -1,0 +1,27 @@
+.container-topic {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  gap: 10px;
+  width: 70%;
+}
+.topic-body{
+  padding: 0 20px !important; 
+}
+.title-topic {
+  display: block;
+  font-weight: 580;
+  color: black;
+  font-size: 25px !important;
+}
+.title-hashtag {
+  display: inline-flex;
+  padding-right: 20px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.topic-bottom{
+  display: flex;
+  justify-content: space-between;
+  padding-top: 20px;
+}

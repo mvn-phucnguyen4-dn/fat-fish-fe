@@ -20,7 +20,6 @@ const tagColors = [
 
 function TopicHeader({ topic }) {
   const [toggle, setToggle] = useState(false)
-
   return (
     <>
       <div className="topic-square"></div>

@@ -5,13 +5,19 @@ import './ShortAnswer.css'
 
 const { Title } = Typography
 
-function ShortAnswer({ idx, question }) {
-  const [value, setValue] = useState('')
+function ShortAnswer({ idx, question, setPushData, pushData, topic, section }) {
   return (
     <>
       <div className="short-answer">
         <Title level={4}>{idx + ', ' + question.title}</Title>
-        <BodyInput key="Body" value={value} onChange={() => setValue(value)} />
+        <BodyInput
+          key="Body"
+          pushData={pushData}
+          question={question}
+          setPushData={setPushData}
+          topic={topic}
+          section={section}
+        />
       </div>
     </>
   )
