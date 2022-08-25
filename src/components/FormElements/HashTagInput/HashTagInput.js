@@ -40,7 +40,6 @@ const HashTagInput = (props) => {
         setTagInServer([...response.data])
       } catch (error) {
         setError(error.message)
-        console.log(error)
       }
     }
     fetchGetHashtag()
@@ -53,7 +52,6 @@ const HashTagInput = (props) => {
       const response = await fetchDataApi('hashtags', token, 'POST', tag)
       return response.data
     } catch (error) {
-      console.log(error)
       setError(error.message)
     }
   }

@@ -55,7 +55,6 @@ const EditTopic = () => {
         setError(response.message)
       }
     } catch (error) {
-      console.log(error.message)
       setError(error.message)
     }
   }
@@ -71,7 +70,6 @@ const EditTopic = () => {
       )
     } catch (error) {
       setError(error.message)
-      console.log(error)
     }
   }
 
