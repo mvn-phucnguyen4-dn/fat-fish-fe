@@ -43,9 +43,7 @@ export const LoggedInNavLinks = ({
       if (response.data) {
         history.push(`/topics/${1}/edit`)
       }
-    } catch (error) {
-      console.log(error)
-    }
+    } catch (error) {}
   }
 
   return (

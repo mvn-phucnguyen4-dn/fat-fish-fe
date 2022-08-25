@@ -48,7 +48,6 @@ export const useHttpClient = () => {
         setIsLoading(false)
         return responseData //for our component
       } catch (err) {
-        console.log(err)
         setError(err.message || 'Something went wrong...')
         setIsLoading(false)
         throw err

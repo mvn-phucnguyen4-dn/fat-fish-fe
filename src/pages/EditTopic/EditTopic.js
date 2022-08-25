@@ -70,6 +70,7 @@ const EditTopic = () => {
       )
     } catch (error) {
       setError(error.message)
+<<<<<<< HEAD
     }
   }
 
@@ -84,6 +85,8 @@ const EditTopic = () => {
       return response.data
     } catch (error) {
       setError(error.message)
+=======
+>>>>>>> 3dc8045af79fcc4c187ce5eb63b863f50b70301c
     }
   }
 

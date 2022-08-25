@@ -34,7 +34,6 @@ const Section = (props) => {
         },
       )
     } catch (error) {
-      console.log(error)
       setError(error.message)
     }
   }
@@ -52,7 +51,6 @@ const Section = (props) => {
       })
       return response.data
     } catch (error) {
-      console.log(error)
       setError(error.message)
     }
   }

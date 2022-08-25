@@ -52,7 +52,6 @@ const Question = (props) => {
         updateQuestions(response.data)
       }
     } catch (error) {
-      console.log(error)
       setError(error.message)
     }
   }
@@ -68,7 +67,6 @@ const Question = (props) => {
       )
       return response.data
     } catch (error) {
-      console.log(error)
       setError(error.message)
     }
   }
