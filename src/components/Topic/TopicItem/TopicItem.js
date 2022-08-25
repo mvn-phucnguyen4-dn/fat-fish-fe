@@ -112,7 +112,11 @@ function TopicItem({ item, setMyTopic }) {
       />
       <Divider style={{ margin: '0' }} />
       <div className="test-title">
-        <a href={`/topics/${item.id}`}>{item.title}</a>
+        <a href={`/topics/${item.id}`}>
+          {item.title.length < 20
+            ? item.title
+            : item.title.slice(0, 20) + '...'}
+        </a>
       </div>
 
       <div className="hashtag">

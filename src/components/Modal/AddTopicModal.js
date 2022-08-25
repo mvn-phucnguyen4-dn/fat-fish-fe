@@ -46,7 +46,7 @@ function AddTopicModal({ isModalVisible, setIsModalVisible, setMyTopic }) {
 
   return (
     <Modal
-      title="Basic Modal"
+      title="Add topic"
       visible={isModalVisible}
       okText="Create"
       onOk={handleOk}

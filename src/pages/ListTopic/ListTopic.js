@@ -31,21 +31,6 @@ function ListTopic() {
     currentUser && fetchTopics()
   }, [currentUser])
 
-  useEffect(() => {
-    const fetchShareTopics = async () => {
-      try {
-        const response = await fetchDataApi(
-          `topics/share`,
-          currentUser.accessToken,
-          'GET',
-        )
-        response && setShareTopic(response.data.topics)
-      } catch (error) {
-        setError(error.message)
-      }
-    }
-    currentUser && fetchShareTopics()
-  }, [currentUser])
   return (
     <>
       <Row>
@@ -79,37 +64,12 @@ function ListTopic() {
                 onChange: (page) => {
                   console.log(page)
                 },
-                pageSize: 6,
+                pageSize: 9,
               }}
               dataSource={myTopic}
               renderItem={(item) => (
                 <TopicItem item={item} setMyTopic={setMyTopic} />
               )}
-            />
-
-            <List
-              header={
-                <Typography.Title level={2}>Share topic</Typography.Title>
-              }
-              itemLayout="vertical"
-              size="large"
-              grid={{
-                gutter: 16,
-                xs: 1,
-                sm: 2,
-                md: 3,
-                lg: 3,
-                xl: 3,
-                xxl: 3,
-              }}
-              pagination={{
-                onChange: (page) => {
-                  console.log(page)
-                },
-                pageSize: 6,
-              }}
-              dataSource={shareTopic}
-              renderItem={(item) => <TopicItem item={item} />}
             />
           </div>
         </Col>
