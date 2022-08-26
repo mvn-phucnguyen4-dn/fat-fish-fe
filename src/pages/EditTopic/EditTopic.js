@@ -218,6 +218,8 @@ const EditTopic = () => {
               background: 'rgb(24 144 255)',
               color: '#fff',
               marginTop: '10px',
+              borderRadius: '6px',
+              fontWeight: '500',
             }}
           >
             Submit <span>&rarr;</span>

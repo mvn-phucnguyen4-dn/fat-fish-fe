@@ -221,8 +221,8 @@ const Question = (props) => {
                   onClick={addAnswer}
                   className={styles['add-option']}
                   shape="circle"
-                  disabled={answers.length === MAX_OPTION}
                   size="small"
+                  disabled={answers.length === MAX_OPTION}
                 />
               </Tooltip>
             </div>
@@ -274,6 +274,7 @@ const Question = (props) => {
               step={1}
               value={question.score}
               onChange={changeScore}
+              style={{ width: 60 }}
             ></InputNumber>
           </div>
         </div>
