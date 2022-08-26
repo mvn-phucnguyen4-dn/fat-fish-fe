@@ -8,6 +8,8 @@ import { fetchDataApi } from '../../utils/fetchDataApi'
 import { auth } from '../../utils/initFirebase'
 import useHttpClient from '../../hooks/useHttpClient'
 import ErrorModal from '../Modal/ErrorModal'
+import { toast } from 'react-toastify'
+import { toastOptions, statePromise } from '../../utils/toastOption'
 
 const Section = (props) => {
   const [section, setSection] = useState({})
@@ -24,14 +26,13 @@ const Section = (props) => {
   const fetchUpdateSection = async (section) => {
     try {
       const token = await auth.currentUser.getIdToken()
-      const response = await fetchDataApi(
-        `sections/${section.id}`,
-        token,
-        'PUT',
-        {
+      const response = await toast.promise(
+        fetchDataApi(`sections/${section.id}`, token, 'PUT', {
           title: section.title,
           questionIds: section.questionIds,
-        },
+        }),
+        statePromise,
+        toastOptions,
       )
     } catch (error) {
       setError(error.message)
@@ -41,14 +42,18 @@ const Section = (props) => {
   const fetchPostQuestion = async () => {
     try {
       const token = await auth.currentUser.getIdToken()
-      const response = await fetchDataApi('questions', token, 'POST', {
-        type: 'multi_choice',
-        title: 'Question title',
-        imageUrl: '',
-        description: 'Question description',
-        score: 10,
-        isPrivate: false,
-      })
+      const response = await toast.promise(
+        fetchDataApi('questions', token, 'POST', {
+          type: 'multi_choice',
+          title: 'Question title',
+          imageUrl: '',
+          description: 'Question description',
+          score: 10,
+          isPrivate: false,
+        }),
+        statePromise,
+        toastOptions,
+      )
       return response.data
     } catch (error) {
       setError(error.message)
@@ -107,7 +112,7 @@ const Section = (props) => {
       <div className="section">
         <TextareaAutosize
           rows={1}
-          className="title-topic"
+          className="title-section"
           autoSize
           value={section.title}
           onChange={changeTitle}

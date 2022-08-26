@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import BasicInformation from '../../components/FormElements/BasicInformation/BasicInformation'
 import { PlusOutlined } from '@ant-design/icons'
 import Section from '../../components/Section/Section'
@@ -11,6 +11,9 @@ import { fetchDataApi } from '../../utils/fetchDataApi'
 import { auth } from '../../utils/initFirebase'
 import useHttpClient from '../../hooks/useHttpClient'
 import ErrorModal from '../../components/Modal/ErrorModal'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { toastOptions, statePromise } from '../../utils/toastOption'
 
 const EditTopic = () => {
   const { topicId } = useParams()
@@ -29,7 +32,15 @@ const EditTopic = () => {
   const fetchGetTopicById = async () => {
     try {
       const token = await auth.currentUser.getIdToken()
-      const response = await fetchDataApi(`topics/${topicId}`, token, 'GET')
+      const response = await toast.promise(
+        fetchDataApi(`topics/${topicId}`, token, 'GET'),
+        {
+          pending: 'Getting topic',
+          success: 'Get topic success 👌',
+          error: 'Get topic fail 🤯',
+        },
+        toastOptions,
+      )
       if (response.data) {
         const {
           title,
@@ -62,11 +73,10 @@ const EditTopic = () => {
   const fetchUpdateTopic = async (updateTopic) => {
     try {
       const token = await auth.currentUser.getIdToken()
-      const response = await fetchDataApi(
-        `topics/${topicId}`,
-        token,
-        'PUT',
-        updateTopic,
+      const response = await toast.promise(
+        fetchDataApi(`topics/${topicId}`, token, 'PUT', updateTopic),
+        statePromise,
+        toastOptions,
       )
     } catch (error) {
       setError(error.message)
@@ -76,11 +86,15 @@ const EditTopic = () => {
   const fetchPostSection = async () => {
     try {
       const token = await auth.currentUser.getIdToken()
-      const response = await fetchDataApi('sections', token, 'POST', {
-        topicId: parseInt(topicId),
-        title: 'Section title',
-        questionIds: [],
-      })
+      const response = await toast.promise(
+        fetchDataApi('sections', token, 'POST', {
+          topicId: parseInt(topicId),
+          title: 'Section title',
+          questionIds: [],
+        }),
+        statePromise,
+        toastOptions,
+      )
       return response.data
     } catch (error) {
       setError(error.message)
@@ -150,10 +164,29 @@ const EditTopic = () => {
     setTopic(updateTopic)
   }
 
+  const changeTopicReleaseScore = (releaseScore) => {
+    const updateTopic = { ...topic, releaseScore }
+    fetchUpdateTopic(updateTopic)
+    setTopic(updateTopic)
+  }
+
   return (
     <>
       <ErrorModal error={error} onClose={clearError} />
       <Row>
+        {/* <Alert
+          message="Saved"
+          type={!error ? 'success' : 'error'}
+          showIcon
+          closable
+          style={{
+            width: '20%',
+            position: 'fixed',
+            right: '0',
+            zIndex: '2',
+            bottom: '10px',
+          }}
+        /> */}
         <Col xs={0} sm={3} xl={5}></Col>
         <Col xs={24} sm={18} xl={14} className="new-topic">
           <BasicInformation
@@ -167,6 +200,8 @@ const EditTopic = () => {
             fetchUpdateTopic={fetchUpdateTopic}
             changeTopicIsPrivate={changeTopicIsPrivate}
             isPrivate={topic.isPrivate}
+            changeTopicReleaseScore={changeTopicReleaseScore}
+            releaseScore={topic.releaseScore}
           />
           <div className="new-topic-body">
             <ReactDragListView onDragEnd={onDragEnd} nodeSelector=".section">
@@ -191,12 +226,13 @@ const EditTopic = () => {
               />
             </Tooltip>
           </div>
-          <Button>
+          <Button style={{ background: 'rgb(24 144 255)', color: '#fff' }}>
             Submit <span>&rarr;</span>
           </Button>
         </Col>
         <Col xs={0} sm={3} xl={5}></Col>
       </Row>
+      <ToastContainer />
     </>
   )
 }

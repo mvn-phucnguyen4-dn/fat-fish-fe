@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import './BasicInformation.css'
 import TextareaAutosize from 'react-textarea-autosize'
 import HashTagInput from '../HashTagInput/HashTagInput'
 import { Switch } from 'antd'
+import styles from './BasicInformation.module.css'
 
 const BasicInformation = (props) => {
   const [title, setTitle] = useState('')
@@ -12,6 +12,8 @@ const BasicInformation = (props) => {
     changeTopicDescription,
     isPrivate,
     changeTopicIsPrivate,
+    changeTopicReleaseScore,
+    releaseScore,
   } = props
 
   useEffect(() => {
@@ -39,32 +41,49 @@ const BasicInformation = (props) => {
     changeTopicIsPrivate(isPrivate)
   }
 
+  const changeReleaseScore = (releaseScore) => {
+    changeTopicReleaseScore(releaseScore)
+  }
+
   return (
     <>
-      <div className="topic-square"></div>
-      <div className="basic-informatin">
-        <div className="head-topic">
+      <div className={styles['topic-square']}></div>
+      <div className={styles['basic-informatin']}>
+        <div className={styles['head-topic']}>
           <h1>Create a topic</h1>
-          <p>
-            Set private for topic:{' '}
-            <Switch checked={isPrivate} onChange={changeIsPrivate} />
-          </p>
+          <div className={styles['head-topic-action']}>
+            <p>
+              Set private for topic:
+              <Switch checked={isPrivate} onChange={changeIsPrivate} />
+            </p>
+            <p>
+              Set release score for topic:
+              <Switch checked={releaseScore} onChange={changeReleaseScore} />
+            </p>
+          </div>
         </div>
-        <TextareaAutosize
-          rows={1}
-          className="title-topic"
-          value={title}
-          autoSize
-          onBlur={blurTitle}
-          onChange={changeTitle}
-        />
-        <TextareaAutosize
-          className="description-topic"
-          autoSize
-          value={description}
-          onBlur={blurDescription}
-          onChange={changeDescription}
-        />
+        <div className={styles['brise-input']}>
+          <TextareaAutosize
+            rows={1}
+            className={styles['title-topic']}
+            value={title}
+            autoSize
+            onBlur={blurTitle}
+            onChange={changeTitle}
+          />
+          <span className={styles.line}></span>
+        </div>
+
+        <div className={styles['brise-input']}>
+          <TextareaAutosize
+            className="description-topic"
+            autoSize
+            value={description}
+            onBlur={blurDescription}
+            onChange={changeDescription}
+          />
+          <span className={styles.line}></span>
+        </div>
         <HashTagInput
           tags={props.hashtags}
           addTag={props.addTag}

@@ -8,6 +8,8 @@ import { auth } from '../../utils/initFirebase'
 import { fetchDataApi } from '../../utils/fetchDataApi'
 import useHttpClient from '../../hooks/useHttpClient'
 import ErrorModal from '../Modal/ErrorModal'
+import { toast } from 'react-toastify'
+import { toastOptions, statePromise } from '../../utils/toastOption'
 
 const { Option } = Select
 const TYPE_MULTIPLE_CHOICE = 'multi_choice'
@@ -42,11 +44,10 @@ const Question = (props) => {
   const fetchUpdateQuestion = async (updateQuestion) => {
     try {
       const token = await auth.currentUser.getIdToken()
-      const response = await fetchDataApi(
-        `questions/${questionId}`,
-        token,
-        'PUT',
-        updateQuestion,
+      const response = await toast.promise(
+        fetchDataApi(`questions/${questionId}`, token, 'PUT', updateQuestion),
+        statePromise,
+        toastOptions,
       )
       if (response.data) {
         updateQuestions(response.data)
@@ -59,11 +60,12 @@ const Question = (props) => {
   const fetchUpdateQuestionAnswer = async (updateAnswers) => {
     try {
       const token = await auth.currentUser.getIdToken()
-      const response = await fetchDataApi(
-        `questions/${questionId}/answers`,
-        token,
-        'PUT',
-        { answers: updateAnswers },
+      const response = await toast.promise(
+        fetchDataApi(`questions/${questionId}/answers`, token, 'PUT', {
+          answers: updateAnswers,
+        }),
+        statePromise,
+        toastOptions,
       )
       return response.data
     } catch (error) {
