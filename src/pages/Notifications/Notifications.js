@@ -11,23 +11,6 @@ const Notifications = ({ user, userFollowStats }) => {
   const [notifications, setNotifications] = useState([])
   const { isLoading, sendReq, error, clearError } = useHttpClient()
 
-  useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        const responseData = await sendReq(
-          `${process.env.REACT_APP_BASE_URL}/users/${currentUser.userId}/notifications`,
-          'GET',
-          null,
-          {
-            Authorization: `Bearer ${currentUser.token}`,
-          },
-        )
-        setNotifications(responseData.notifications)
-      } catch (err) {}
-    }
-    fetchNotifications()
-  }, [sendReq, currentUser.userId, currentUser])
-
   return (
     <>
       <ErrorModal error={error} onClose={clearError} />
