@@ -1,17 +1,21 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import './ShowTopic.css'
 import { ranColor, changeDate } from '../../utils/commonFunc'
 import { Card, Tag } from 'antd'
 import { NavLink } from 'react-router-dom'
 import { fetchDataApi } from '../../utils/fetchDataApi'
+import { AuthContext } from '../../context/auth'
 
 const ShowTopic = () => {
   const [topics, setTopics] = useState([])
-
+  const { currentUser } = useContext(AuthContext)
   const fetchTopics = async () => {
     try {
-      const limit = 10
-      const responseData = await fetchDataApi(`topics`)
+      const responseData = await fetchDataApi(
+        `topics`,
+        currentUser.accessToken,
+        'GET',
+      )
       if (responseData) {
         setTopics([...topics, ...responseData.data])
       }
@@ -41,9 +45,9 @@ const ShowTopic = () => {
                     }}
                   >
                     <NavLink to={`/topic/${item.id}`} className="title-topic">
-                      {item.title}
+                      <h3>{item.title}</h3>
                     </NavLink>
-                    <h4>{item.description}</h4>
+                    <p>{item.description}</p>
                     {item.hashtags.map((hashtag) => {
                       return (
                         <>
@@ -57,11 +61,6 @@ const ShowTopic = () => {
                         </>
                       )
                     })}
-                    <div className="topic-bottom">
-                      <span className="topic-point">
-                        Total: {item.totalScore} point
-                      </span>
-                    </div>
                   </Card>
                 </>
               )

@@ -39,12 +39,14 @@ function MultipleChoice({
     <div className="multi-choice">
       {question && (
         <>
-          <Title level={4}>{idx + ', ' + question.title}</Title>
+          <Title style={{ 'font-weight': '550', fontSize: '20px' }} level={5}>
+            {idx + ', ' + question.title}
+          </Title>
           <Radio.Group onChange={onChange} value={value}>
             <Space direction="vertical">
               {question.answers.map((item) => (
                 <Radio className="btn-radio" key={item.id} value={item.id}>
-                  {item.answer}
+                  <p fontSize={'14px'}> {item.answer}</p>
                 </Radio>
               ))}
             </Space>
