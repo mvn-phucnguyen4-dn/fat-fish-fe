@@ -12,4 +12,5 @@
 
 .add-question {
   align-self: flex-end;
+  border-radius: 50%;
 }

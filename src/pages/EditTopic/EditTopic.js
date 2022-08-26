@@ -173,20 +173,7 @@ const EditTopic = () => {
   return (
     <>
       <ErrorModal error={error} onClose={clearError} />
-      <Row>
-        {/* <Alert
-          message="Saved"
-          type={!error ? 'success' : 'error'}
-          showIcon
-          closable
-          style={{
-            width: '20%',
-            position: 'fixed',
-            right: '0',
-            zIndex: '2',
-            bottom: '10px',
-          }}
-        /> */}
+      <Row style={{ marginTop: '20px' }}>
         <Col xs={0} sm={3} xl={5}></Col>
         <Col xs={24} sm={18} xl={14} className="new-topic">
           <BasicInformation
@@ -226,7 +213,13 @@ const EditTopic = () => {
               />
             </Tooltip>
           </div>
-          <Button style={{ background: 'rgb(24 144 255)', color: '#fff' }}>
+          <Button
+            style={{
+              background: 'rgb(24 144 255)',
+              color: '#fff',
+              marginTop: '10px',
+            }}
+          >
             Submit <span>&rarr;</span>
           </Button>
         </Col>

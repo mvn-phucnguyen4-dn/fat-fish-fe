@@ -220,7 +220,9 @@ const Question = (props) => {
                   icon={<PlusOutlined />}
                   onClick={addAnswer}
                   className={styles['add-option']}
+                  shape="circle"
                   disabled={answers.length === MAX_OPTION}
+                  size="small"
                 />
               </Tooltip>
             </div>
