@@ -88,9 +88,8 @@ function TopicItem({ item, setMyTopic }) {
             <Popover
               placement="right"
               content={
-                <>
-                  <Button
-                    type="text"
+                <div className="topic-item-popover">
+                  <p
                     onClick={() => {
                       if (window.confirm('Delete the item?')) {
                         handleDelete(item.id)
@@ -98,8 +97,8 @@ function TopicItem({ item, setMyTopic }) {
                     }}
                   >
                     Delete
-                  </Button>
-                </>
+                  </p>
+                </div>
               }
               trigger="click"
             >

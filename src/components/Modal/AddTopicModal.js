@@ -92,18 +92,6 @@ function AddTopicModal({ isModalVisible, setIsModalVisible, setMyTopic }) {
         >
           <TextArea rows={4} placeholder="Description..." />
         </Form.Item>
-        <Form.Item
-          label="Total score"
-          name="totalScore"
-          rules={[
-            {
-              required: true,
-              message: 'Please input your total score!',
-            },
-          ]}
-        >
-          <InputNumber />
-        </Form.Item>
         <Form.Item name="isPrivate">
           <Radio.Group style={{ display: 'flex' }}>
             <Radio value={false}>Private</Radio>
