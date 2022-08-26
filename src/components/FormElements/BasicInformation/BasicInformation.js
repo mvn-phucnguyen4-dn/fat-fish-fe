@@ -1,17 +1,32 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import './BasicInformation.css'
 import TextareaAutosize from 'react-textarea-autosize'
 import HashTagInput from '../HashTagInput/HashTagInput'
 
 const BasicInformation = (props) => {
-  const { title, description } = props
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const { changeTopicTitle, changeTopicDescription } = props
 
-  const handleChangeTitle = (e) => {
-    props.changeTopicTitle(e.target.value)
+  useEffect(() => {
+    setTitle(props.title)
+    setDescription(props.description)
+  }, [props.title, props.description])
+
+  const changeTitle = (e) => {
+    setTitle(e.target.value)
   }
 
-  const handleChangeDescription = (e) => {
-    props.changeTopicDescription(e.target.value)
+  const changeDescription = (e) => {
+    setDescription(e.target.value)
+  }
+
+  const blurTitle = () => {
+    changeTopicTitle(title)
+  }
+
+  const blurDescription = () => {
+    changeTopicDescription(description)
   }
 
   return (
@@ -24,14 +39,15 @@ const BasicInformation = (props) => {
           className="title-topic"
           value={title}
           autoSize
-          onChange={handleChangeTitle}
+          onBlur={blurTitle}
+          onChange={changeTitle}
         />
-
         <TextareaAutosize
           className="description-topic"
           autoSize
           value={description}
-          onChange={handleChangeDescription}
+          onBlur={blurDescription}
+          onChange={changeDescription}
         />
         <HashTagInput
           tags={props.hashtags}
