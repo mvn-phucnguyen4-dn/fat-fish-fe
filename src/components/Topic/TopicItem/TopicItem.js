@@ -30,7 +30,7 @@ const tagColors = [
   'purple',
 ]
 
-function TopicItem({ item, setMyTopic }) {
+function TopicItem({ item, setRenderData }) {
   const { setError } = useHttpClient()
   const [topicUser, setTopicUser] = useState({})
   const [user, setUser] = useState({})
@@ -61,13 +61,8 @@ function TopicItem({ item, setMyTopic }) {
 
   const handleDelete = async (id) => {
     try {
-      const response = await fetchDataApi(
-        `topics/${id}`,
-        currentUser.accessToken,
-        'DELETE',
-      )
-      response &&
-        setMyTopic((oldArray) => oldArray.filter((item) => item.id !== id))
+      setRenderData((oldData) => oldData.filter((item) => item.id !== id))
+      await fetchDataApi(`topics/${id}`, currentUser.accessToken, 'DELETE')
     } catch (error) {
       setError(error.message)
     }

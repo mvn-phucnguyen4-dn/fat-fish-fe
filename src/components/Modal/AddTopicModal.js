@@ -5,7 +5,7 @@ import { AuthContext } from '../../context/auth'
 import useHttpClient from '../../hooks/useHttpClient'
 import { fetchDataApi } from '../../utils/fetchDataApi'
 
-function AddTopicModal({ isModalVisible, setIsModalVisible, setMyTopic }) {
+function AddTopicModal({ isModalVisible, setIsModalVisible, setRenderData }) {
   const { setError } = useHttpClient()
   const [form] = Form.useForm()
   const { currentUser } = useContext(AuthContext)
@@ -36,7 +36,7 @@ function AddTopicModal({ isModalVisible, setIsModalVisible, setMyTopic }) {
       )
       if (response) {
         const newValue = { ...values, hashtags: [] }
-        setMyTopic((oldArray) => [...oldArray, newValue])
+        setRenderData((oldData) => [...oldData, newValue])
         setIsModalVisible(false)
       }
     } catch (error) {
