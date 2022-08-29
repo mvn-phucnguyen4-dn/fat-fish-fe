@@ -3,7 +3,7 @@ import SimpleMDE from 'react-simplemde-editor'
 import 'easymde/dist/easymde.min.css'
 
 export const BodyInput = (props) => {
-  const [value, setValue] = useState(null)
+  const [value, setValue] = useState('')
   const { hideIcons, maxHeight } = props
 
   const autofocusNoSpellcheckerOptions = useMemo(() => {
@@ -23,30 +23,17 @@ export const BodyInput = (props) => {
     }
   }, [])
   useEffect(() => {
-    const answerIndex = props.pushData.findIndex(
-      (item) => item.questionId === props.question.id,
-    )
-    if (answerIndex == 1) {
-      props.setPushData((prev) => [
-        ...prev,
-        {
-          topicId: props.topic,
-          sectionId: props.section,
-          questionId: props.question.id,
-          answerText: null,
-          answerId: null,
-        },
-      ])
-    }
-  }, [props.value])
+    onBlur()
+  }, [value])
   const onfocus = () => {}
   const onBlur = () => {
     const answerIndex = props.pushData.findIndex(
       (item) => item.questionId === props.question.id,
     )
     if (answerIndex !== -1) {
-      props.pushData[answerIndex].answer_text = value
+      props.pushData[answerIndex].answerText = value
       props.setPushData(props.pushData)
+      setValue(value)
     } else {
       props.setPushData((prev) => [
         ...prev,
