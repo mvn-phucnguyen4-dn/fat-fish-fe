@@ -10,12 +10,10 @@ import { fetchDataApi } from '../../../utils/fetchDataApi'
 
 const { Text } = Typography
 
-function TopicBody({ sections }) {
+function TopicBody({ sections, topic }) {
   const { currentUser } = useContext(AuthContext)
-  const currentUserId = currentUser && currentUser.userId
-
   const [data, setData] = useState(sections)
-
+  const [check, setCheck] = useState([])
   const [pushData, setPushData] = useState([])
   const onDragEnd = (fromIndex, toIndex) => {
     if (toIndex < 0) return // Ignores if outside designated area
@@ -26,20 +24,36 @@ function TopicBody({ sections }) {
     setData(items)
   }
   const { confirm } = Modal
-  const showModalSubmit = () => {
+
+  const showConfirm = () => {
     confirm({
       title: 'Bạn có chắc chắn nộp bài không ?',
       icon: <ExclamationCircleOutlined />,
       okText: 'Có',
-      okType: 'danger',
+      okType: 'primary',
       cancelText: 'Không',
       async onOk() {
-        await fetchDataApi(`user-answer`, currentUser.accessToken, 'POST', {
-          userAnswers: pushData,
-        })
+        await createUserAnswer()
+        await calcScore()
       },
       onCancel() {},
     })
+  }
+  const createUserAnswer = async () => {
+    await fetchDataApi(`user-answer`, currentUser.accessToken, 'POST', {
+      userAnswers: pushData,
+    })
+  }
+  const calcScore = async () => {
+    const topicId = topic.id
+    await fetchDataApi(
+      `topics/${topicId}/mark-score`,
+      currentUser.accessToken,
+      'POST',
+      {
+        data: topicId,
+      },
+    )
   }
   return (
     <>
@@ -99,7 +113,7 @@ function TopicBody({ sections }) {
               className="btn-submit"
               type="primary"
               size="large"
-              onClick={showModalSubmit}
+              onClick={showConfirm}
             >
               Submit
             </Button>

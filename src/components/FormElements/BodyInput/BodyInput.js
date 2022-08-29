@@ -6,8 +6,13 @@ export const BodyInput = (props) => {
   const [value, setValue] = useState('')
   const [isBlur, setIsBlur] = useState(false)
   const { hideIcons, maxHeight } = props
-  const toolbar = isBlur
-    ? [
+
+  const autofocusNoSpellcheckerOptions = useMemo(() => {
+    return {
+      spellChecker: false,
+      maxHeight: maxHeight || '100px',
+      hideIcons: hideIcons,
+      toolbar: [
         'bold',
         'italic',
         'fullscreen',
@@ -15,13 +20,7 @@ export const BodyInput = (props) => {
         'code',
         'unordered-list',
         'clean-block',
-      ]
-    : false
-  const autofocusNoSpellcheckerOptions = useMemo(() => {
-    return {
-      spellChecker: false,
-      maxHeight: maxHeight || '100px',
-      hideIcons: hideIcons,
+      ],
     }
   }, [])
   useEffect(() => {
@@ -56,7 +55,6 @@ export const BodyInput = (props) => {
   const onChange = (e) => {
     setValue(e)
   }
-  console.log('set is blur', isBlur)
   return (
     <SimpleMDE
       value={value}

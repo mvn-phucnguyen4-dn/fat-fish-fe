@@ -40,11 +40,11 @@ const LeftSideBar = () => {
               </li>
             )}
             <li className="list__item hvr-bg-lt">
-              <NavLink to="/tags" exact>
+              <NavLink to="/topics" exact>
                 <i>
                   <FaTags />
                 </i>
-                Tags
+                Topics
               </NavLink>
             </li>
             <li className="list__item hvr-bg-lt">

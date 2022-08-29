@@ -1,5 +1,5 @@
 import { Radio, Space, Typography } from 'antd'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './MultipleChoice.css'
 
 const { Title } = Typography
@@ -11,17 +11,20 @@ function MultipleChoice({
   setPushData,
   topic,
   section,
+  checkValid,
 }) {
   const [value, setValue] = useState([])
   const onChange = (e) => {
-    let answerId = e.target.value
+    const answerId = e.target.value
     const answerIndex = pushData.findIndex(
       (item) => item.questionId === question.id,
     )
     if (answerIndex !== -1) {
       pushData[answerIndex].answerId = answerId
       setPushData(pushData)
+      checkValid(pushData)
     } else {
+      checkValid(pushData)
       setPushData((prev) => [
         ...prev,
         {
@@ -42,8 +45,14 @@ function MultipleChoice({
           <Title level={4}>{idx + ', ' + question.title}</Title>
           <Radio.Group onChange={onChange} value={value}>
             <Space direction="vertical">
-              {question.answers.map((item) => (
-                <Radio className="btn-radio" key={item.id} value={item.id}>
+              {question.answers.map((item, index) => (
+                <Radio
+                  className="btn-radio"
+                  key={item.id}
+                  index={index}
+                  value={item.id}
+                  checked
+                >
                   {item.answer}
                 </Radio>
               ))}

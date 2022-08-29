@@ -17,7 +17,6 @@ const Home = () => {
         <div className="container-sidebar">
           <LeftSideBar />
         </div>
-        <ShowTopic />
         <Posts cover={true} />
         <RightSideBar tags={tags} isLoading={isLoading} />
       </div>

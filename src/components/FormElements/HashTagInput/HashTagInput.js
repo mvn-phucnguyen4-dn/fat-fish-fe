@@ -69,7 +69,6 @@ const HashTagInput = (props) => {
                 key={tag.id}
                 onClick={() => {
                   addTag(tag)
-                  console.log(tag)
                 }}
               >
                 {tag.title}

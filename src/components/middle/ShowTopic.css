@@ -3,21 +3,38 @@
   flex-wrap: wrap;
   flex-direction: row;
   gap: 10px;
-  width: 70%;
+  margin: 10px 20px 0 20px;
+  max-width: 1440px;
+  justify-content: space-around;
+}
+.title-topic-main{
+  font-size: 25px !important;
 }
 .topic-body{
-  padding: 0 20px !important; 
+  /* flex: 0 0 10.3333%; */
+  width: 450px;
+  /* margin: 20px 10px 0 10px; */
+}
+.top-content-topic{
+  display: flex;
+  justify-content: space-between;
+  padding: 0 30px;
+}
+.bg-top-card{
+  height: 10px;
+  background: #000;
 }
 .title-topic {
   display: block;
-  font-weight: 580;
+  font-weight: 550;
   color: black;
-  font-size: 25px !important;
+  font-size: 15px !important;
 }
 .title-hashtag {
   display: inline-flex;
   padding-right: 20px;
-  font-size: 14px;
+  margin-top: 5px;
+  font-size: 13px;
   cursor: pointer;
 }
 .topic-bottom{
