@@ -24,7 +24,9 @@ function TopicHeader({ topic }) {
     <>
       <div className="topic-square"></div>
       <div className="topic-title">
-        <Title level={1}>{topic.title}</Title>
+        <Title style={{ 'font-weight': '550' }} level={3}>
+          {topic.title}
+        </Title>
         <Text>
           {topic.description.length > 600 && toggle === false ? (
             <p>

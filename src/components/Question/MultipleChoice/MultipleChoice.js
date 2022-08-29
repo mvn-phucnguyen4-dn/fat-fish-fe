@@ -11,7 +11,6 @@ function MultipleChoice({
   setPushData,
   topic,
   section,
-  checkValid,
 }) {
   const [value, setValue] = useState([])
   const onChange = (e) => {
@@ -22,9 +21,7 @@ function MultipleChoice({
     if (answerIndex !== -1) {
       pushData[answerIndex].answerId = answerId
       setPushData(pushData)
-      checkValid(pushData)
     } else {
-      checkValid(pushData)
       setPushData((prev) => [
         ...prev,
         {
@@ -42,7 +39,9 @@ function MultipleChoice({
     <div className="multi-choice">
       {question && (
         <>
-          <Title level={4}>{idx + ', ' + question.title}</Title>
+          <Title style={{ 'font-weight': '550', fontSize: '20px' }} level={5}>
+            {idx + ', ' + question.title}
+          </Title>
           <Radio.Group onChange={onChange} value={value}>
             <Space direction="vertical">
               {question.answers.map((item, index) => (

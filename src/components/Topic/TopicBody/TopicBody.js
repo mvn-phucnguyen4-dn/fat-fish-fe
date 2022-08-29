@@ -78,7 +78,7 @@ function TopicBody({ sections, topic }) {
                           className="section-title"
                           style={{ marginBottom: '50px' }}
                         >
-                          {item.title}
+                          <h4 style={{ 'font-weight': '550' }}>{item.title}</h4>
                         </Text>
                       }
                       description={item.questions.map((element, index) => (

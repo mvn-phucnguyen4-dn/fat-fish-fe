@@ -12,6 +12,7 @@ function ShowTopic() {
   const { setError } = useHttpClient()
   const [topics, setTopics] = useState([])
   const { currentUser } = useContext(AuthContext)
+
   const { Search } = Input
   const fetchTopics = async () => {
     try {
@@ -59,7 +60,7 @@ function ShowTopic() {
                   >
                     {/* <div className="bg-top-card"></div> */}
                     <NavLink to={`/topic/${item.id}`} className="title-topic">
-                      {item.title}
+                      <h3>{item.title}</h3>
                     </NavLink>
                     <p>{item.description}</p>
                     {item.hashtags.map((hashtag) => {
