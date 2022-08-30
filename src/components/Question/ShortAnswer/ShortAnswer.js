@@ -9,9 +9,9 @@ function ShortAnswer({ idx, question, setPushData, pushData, topic, section }) {
   return (
     <>
       <div className="short-answer">
-        <Title style={{ 'font-weight': '550', fontSize: '20px' }} level={4}>
+        <p style={{ fontSize: '15px', color: 'black' }}>
           {idx + ', ' + question.title}
-        </Title>
+        </p>
         <BodyInput
           key="Body"
           pushData={pushData}

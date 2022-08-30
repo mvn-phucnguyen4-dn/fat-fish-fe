@@ -39,10 +39,18 @@ function TopicBody({ sections, topic }) {
       onCancel() {},
     })
   }
+  console.log('currentUser.accessToken', currentUser.accessToken)
   const createUserAnswer = async () => {
-    await fetchDataApi(`user-answer`, currentUser.accessToken, 'POST', {
-      userAnswers: pushData,
-    })
+    const api = await fetchDataApi(
+      `user-answers`,
+      currentUser.accessToken,
+      'POST',
+      {
+        topicId: topic.id,
+        userAnswers: pushData,
+      },
+    )
+    console.log('check ', api)
   }
   const calcScore = async () => {
     const topicId = topic.id
@@ -78,7 +86,7 @@ function TopicBody({ sections, topic }) {
                           className="section-title"
                           style={{ marginBottom: '50px' }}
                         >
-                          <h4 style={{ 'font-weight': '550' }}>{item.title}</h4>
+                          <p fontSize={'16px'}>{item.title}</p>
                         </Text>
                       }
                       description={item.questions.map((element, index) => (

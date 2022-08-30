@@ -1,4 +1,4 @@
-import { Radio, Space, Typography } from 'antd'
+import { Radio, Space, Typography, Form } from 'antd'
 import React, { useEffect, useState } from 'react'
 import './MultipleChoice.css'
 
@@ -14,6 +14,7 @@ function MultipleChoice({
 }) {
   const [value, setValue] = useState([])
   const onChange = (e) => {
+    console.log('check require', e.target.rules)
     const answerId = e.target.value
     const answerIndex = pushData.findIndex(
       (item) => item.questionId === question.id,
@@ -39,24 +40,28 @@ function MultipleChoice({
     <div className="multi-choice">
       {question && (
         <>
-          <Title style={{ 'font-weight': '550', fontSize: '20px' }} level={5}>
-            {idx + ', ' + question.title}
-          </Title>
-          <Radio.Group onChange={onChange} value={value}>
-            <Space direction="vertical">
-              {question.answers.map((item, index) => (
-                <Radio
-                  className="btn-radio"
-                  key={item.id}
-                  index={index}
-                  value={item.id}
-                  checked
-                >
-                  {item.answer}
-                </Radio>
-              ))}
-            </Space>
-          </Radio.Group>
+          <Form>
+            <Form.Item
+              rules={[{ required: true, message: 'Please select an option!' }]}
+            >
+              <p style={{ fontSize: '15px' }}>{idx + ', ' + question.title}</p>
+              <Radio.Group onChange={onChange} required value={value}>
+                <Space direction="vertical">
+                  {question.answers.map((item, index) => (
+                    <Radio
+                      className="btn-radio"
+                      key={item.id}
+                      index={index}
+                      value={item.id}
+                      checked
+                    >
+                      {item.answer}
+                    </Radio>
+                  ))}
+                </Space>
+              </Radio.Group>
+            </Form.Item>
+          </Form>
         </>
       )}
     </div>

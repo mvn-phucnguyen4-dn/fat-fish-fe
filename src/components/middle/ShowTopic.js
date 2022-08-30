@@ -5,31 +5,45 @@ import { AuthContext } from '../../context/auth'
 import { fetchDataApi } from '../../utils/fetchDataApi'
 import './ShowTopic.css'
 import { ranColor } from '../../utils/commonFunc'
-import { Card, Tag, Input } from 'antd'
+import { Card, Tag, Input, Pagination } from 'antd'
 import { NavLink } from 'react-router-dom'
 
 function ShowTopic() {
   const { setError } = useHttpClient()
   const [topics, setTopics] = useState([])
-  const { currentUser } = useContext(AuthContext)
+  const [condition, setCondition] = useState({})
 
+  const { currentUser } = useContext(AuthContext)
+  const LIMIT = 12
   const { Search } = Input
+
   const fetchTopics = async () => {
     try {
-      const limit = 30
+      // console.log('limit', LIMIT)
       const response = await fetchDataApi(
-        `topics/?limit=${limit}`,
+        `topics/?size=${LIMIT}`,
         currentUser.accessToken,
       )
       setTopics(response.data)
+      setCondition(response)
     } catch (error) {
       setError(error.message)
     }
   }
+  // console.log('check limit', condition.meta.limit)
   useEffect(() => {
     fetchTopics()
   }, [])
-
+  const handlePagination = async (page) => {
+    const response = await fetchDataApi(
+      `topics/?page=${page}&size=${LIMIT}`,
+      currentUser.accessToken,
+      'GET',
+    )
+    setTopics(response.data)
+    setCondition(response)
+  }
+  console.log('hello', condition.meta.limit)
   return (
     <>
       <div className="top-content-topic">
@@ -82,6 +96,13 @@ function ShowTopic() {
             } else return []
           })}
       </div>
+      <Pagination
+        style={{ margin: '15px auto' }}
+        pageSize={condition.meta.limit}
+        current={condition.meta.page}
+        total={condition.meta.total}
+        onChange={handlePagination}
+      />
     </>
   )
 }

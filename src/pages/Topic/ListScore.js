@@ -13,40 +13,32 @@ function Quiz() {
   const { setError } = useHttpClient()
   const [data, setData] = useState()
   const { currentUser } = useContext(AuthContext)
-  const { topicId } = useParams()
+  const { id } = useParams()
 
   useEffect(() => {
     const fetchTopics = async () => {
       try {
+        console.log('check topic', id)
         const response = await fetchDataApi(
-          `topics/${topicId}`,
+          `topics/${id}/scores`,
           currentUser.accessToken,
+          'GET',
         )
+        console.log(response.data)
         response && setData(response.data)
       } catch (error) {
         setError(error.message)
       }
     }
     currentUser && fetchTopics()
-  }, [currentUser, topicId])
+  }, [currentUser, id])
 
   return (
     <>
       <Row>
         <Col xs={0} sm={3} xl={5}></Col>
-        <Col
-          xs={24}
-          sm={18}
-          xl={14}
-          marginTop={'25px'}
-          className="margin-topic"
-        >
-          {data && (
-            <>
-              <TopicHeader topic={data} />
-              <TopicBody sections={data.sections} topic={data} />
-            </>
-          )}
+        <Col xs={24} sm={18} xl={14}>
+          {data && <></>}
         </Col>
         <Col xs={0} sm={3} xl={5}></Col>
       </Row>

@@ -19,6 +19,7 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import Topic from './pages/Topic/Topic'
 import EditTopic from './pages/EditTopic/EditTopic'
 import ShowTopic from './components/middle/ShowTopic'
+import ListScore from './pages/Topic/ListScore'
 
 const MainRouter = ({ token }) => {
   let routes
@@ -70,6 +71,9 @@ const MainRouter = ({ token }) => {
           <Route path="/topics/:id" exact>
             <EditTopic />
           </Route>
+          <Route path="/topics/:id/scores" exact>
+            <ListScore />
+          </Route>
           <Redirect to="/auth" />
         </Switch>
         <Footer />
@@ -112,6 +116,9 @@ const MainRouter = ({ token }) => {
           </Route>
           <Route path="/topics/:id" exact>
             <EditTopic />
+          </Route>
+          <Route path="/topics/:id/scores" exact>
+            <ListScore />
           </Route>
           <Redirect to="/auth" />
         </Switch>

@@ -24,9 +24,7 @@ function TopicHeader({ topic }) {
     <>
       <div className="topic-square"></div>
       <div className="topic-title">
-        <Title style={{ 'font-weight': '550' }} level={3}>
-          {topic.title}
-        </Title>
+        <h2>{topic.title}</h2>
         <Text>
           {topic.description.length > 600 && toggle === false ? (
             <p>
@@ -79,10 +77,9 @@ function TopicHeader({ topic }) {
                 )
               })}
             </Col>
-            <Col span={8}></Col>
+            <Col span={7}></Col>
           </Row>
         </div>
-        <Divider>Section</Divider>
       </div>
     </>
   )
