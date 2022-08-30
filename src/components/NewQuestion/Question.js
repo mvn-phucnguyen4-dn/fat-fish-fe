@@ -39,6 +39,8 @@ const Question = (props) => {
       })
 
     if (newAnswers) setAnswers([...newAnswers])
+    else if (type === TYPE_MULTIPLE_CHOICE)
+      setAnswers([{ questionId, answer: 'New option', isRight: true }])
   }, [props.question])
 
   const fetchUpdateQuestion = async (updateQuestion) => {

@@ -24,7 +24,7 @@ const EditTopic = () => {
     title: 'Topic title',
     description: 'Topic description',
     hashtagIds: [],
-    releaseScore: true,
+    releaseScore: false,
     totalScore: 0,
     isPrivate: false,
   })
