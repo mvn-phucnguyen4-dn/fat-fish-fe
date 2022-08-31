@@ -72,10 +72,10 @@ function TopicItem({ item, setRenderData }) {
     <List.Item
       key={item.id}
       className="topic-item-show"
-      style={{ padding: '10px' }}
+      style={{ padding: '10px', minHeight: '170px', maxHeight: '170px' }}
     >
       <List.Item.Meta
-        style={{ margin: '0' }}
+        style={{ margin: '0', minHeight: '45px' }}
         avatar={<Avatar src={'https://joeschmoe.io/api/v1/random'} />}
         title={
           <div className="topic-item-header">
@@ -98,7 +98,11 @@ function TopicItem({ item, setRenderData }) {
               trigger="click"
             >
               {item.userId === user.userId && (
-                <Button icon={<EllipsisOutlined />} size="small" />
+                <Button
+                  style={{ border: 'none' }}
+                  icon={<EllipsisOutlined />}
+                  size="small"
+                />
               )}
             </Popover>
           </div>
@@ -115,7 +119,7 @@ function TopicItem({ item, setRenderData }) {
 
       <div className="hashtag">
         <Row>
-          <Col span={16}>
+          <Col span={24}>
             {item.hashtags.slice(0, 3).map((tag) => {
               const isLongTag = tag.title.length > 20
               const tagElem = (
@@ -141,7 +145,6 @@ function TopicItem({ item, setRenderData }) {
             })}
             {item.hashtags.length > 3 ? '...' : ''}
           </Col>
-          <Col span={8}></Col>
         </Row>
       </div>
     </List.Item>

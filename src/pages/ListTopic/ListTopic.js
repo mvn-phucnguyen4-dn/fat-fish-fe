@@ -66,9 +66,9 @@ function ListTopic() {
               grid={{
                 gutter: 16,
                 xs: 1,
-                sm: 2,
-                md: 3,
-                lg: 3,
+                sm: 1,
+                md: 2,
+                lg: 2,
                 xl: 3,
                 xxl: 3,
               }}
@@ -83,7 +83,12 @@ function ListTopic() {
                 current={myTopic.meta.page}
                 total={myTopic.meta.total}
                 onChange={handlePagination}
-                style={{ bottom: '0px' }}
+                size="default"
+                style={{
+                  bottom: '0px',
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                }}
               />
             )}
           </div>

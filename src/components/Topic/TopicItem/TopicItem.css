@@ -1,6 +1,8 @@
 .topic-item-show {
   background: #f4f9f9;
   border-radius: 5px;
+  max-height: '145px' !important;
+  min-height: '145px' !important;
 }
 
 .topic-item-header {
@@ -15,6 +17,7 @@
   justify-content: center;
   align-items: center;
   font-weight: bold;
+  padding-top: 20px;
 }
 
 .test-title a {

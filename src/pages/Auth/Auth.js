@@ -40,7 +40,6 @@ const Auth = ({ newUser }) => {
       setIsLoading(true)
       const currentUser = auth.currentUser
       const tokenId = await currentUser.getIdToken()
-      console.log(tokenId)
       const response = await fetchDataApi(`users/login`, null, 'POST', {
         tokenId,
       })
