@@ -10,6 +10,7 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   updateProfile,
+  sendEmailVerification,
 } from 'firebase/auth'
 import ErrorModal from '../../components/Modal/ErrorModal'
 import { AuthContext } from '../../context/auth'
@@ -17,6 +18,9 @@ import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner'
 import GoogleLogin from '../../components/Auth/GoogleLogin'
 import './Auth.css'
 import { fetchDataApi } from '../../utils/fetchDataApi'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { toastOptionError } from '../../utils/toastOption'
 
 const Auth = ({ newUser }) => {
   const { renderFormInputs, renderFormValues, setForm } = useForm(loginForm)
@@ -63,9 +67,6 @@ const Auth = ({ newUser }) => {
           new Date(currentUser.stsTokenManager.expirationTime),
         )
         history.push('/')
-      } else {
-        setIsLoading(false)
-        history.push('/auth')
       }
     } catch (error) {
       setIsLoading(false)
@@ -78,7 +79,7 @@ const Auth = ({ newUser }) => {
     setIsLoading(true)
     const { email, password, name, confirmPassword } = formValues
     if (confirmPassword && password !== confirmPassword) {
-      setError('Password and confirm password not same!')
+      toast.error('Password and confirm password not same!', toastOptionError)
       setIsLoading(false)
       return
     }
@@ -90,9 +91,23 @@ const Auth = ({ newUser }) => {
           displayName: name,
         })
       }
-      const user = await signInWithEmailAndPassword(auth, email, password)
-      if (user) {
-        await handleLoginAPI()
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      )
+      if (userCredential) {
+        if (!userCredential.user.emailVerified) {
+          sendEmailVerification(userCredential.user)
+          toast.warning(
+            'Your email not verify, check your email (Spam folder includes) for a confirmation E-mail. And login again',
+            toastOptionError,
+          )
+          setIsLoading(false)
+          history.push('/auth')
+        } else {
+          await handleLoginAPI()
+        }
       }
     } catch (error) {
       setIsLoading(false)
@@ -101,19 +116,6 @@ const Auth = ({ newUser }) => {
     }
   }
 
-  const lockScroll = useCallback(() => {
-    document.body.style.overflow = 'hidden'
-  }, [])
-
-  const unlockScroll = useCallback(() => {
-    document.body.style.overflow = ''
-  }, [])
-
-  if (isLoading) {
-    lockScroll()
-  } else {
-    unlockScroll()
-  }
   return (
     <>
       <ErrorModal error={error} onClose={clearError} />
@@ -144,6 +146,7 @@ const Auth = ({ newUser }) => {
           </div>
         </form>
       </div>
+      <ToastContainer></ToastContainer>
     </>
   )
 }

@@ -11,3 +11,11 @@ export const statePromise = {
   success: 'Saved 👌',
   error: 'Fail 🤯',
 }
+
+export const toastOptionError = {
+  position: 'bottom-right',
+  autoClose: 5000,
+  pauseOnHover: true,
+  draggable: true,
+  theme: 'light',
+}

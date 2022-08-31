@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback } from 'react'
 import useHttpClient from './useHttpClient'
+import { auth } from '../utils/initFirebase'
+import { signOut } from 'firebase/auth'
 
-let logoutTimer
+let refreshTimer
 
 const useAuth = () => {
   const [token, setToken] = useState(false)
@@ -11,13 +13,12 @@ const useAuth = () => {
   const { sendReq } = useHttpClient()
 
   //useCallback((uid, token, expirationDate)
+  // the token is firebase have expire in 1 hour
   const login = useCallback((user, expirationDate) => {
     setUser(user)
     setToken(user.accessToken)
     setUserId(user.userId)
-
-    const tokenExpirationDate =
-      expirationDate || new Date(new Date().getTime() + 1000 * 60 * 60)
+    const tokenExpirationDate = new Date(new Date().getTime() + 1000 * 60 * 60)
     setTokenExpirationDate(tokenExpirationDate)
 
     localStorage.setItem(
@@ -35,6 +36,7 @@ const useAuth = () => {
   }, [])
 
   const logout = useCallback(() => {
+    signOut(auth)
     setToken(null)
     setUserId(null)
     setUser(null)
@@ -42,14 +44,37 @@ const useAuth = () => {
     localStorage.removeItem('userData')
   }, [sendReq])
 
+  const refreshToken = useCallback(async () => {
+    const newToken = await auth.currentUser.getIdToken(true)
+    const storedData = JSON.parse(localStorage.getItem('userData'))
+    const tokenExpirationDate = new Date(new Date().getTime() + 1000 * 60 * 60)
+    storedData.accessToken = newToken
+    storedData.expiration = tokenExpirationDate.toISOString()
+    localStorage.setItem(
+      'userData',
+      JSON.stringify({
+        id: storedData.storedDataId,
+        accessToken: storedData.accessToken,
+        refreshToken: storedData.refreshToken,
+        avatar: storedData.avatar,
+        email: storedData.email,
+        name: storedData.name,
+        expiration: tokenExpirationDate.toISOString(),
+      }),
+    )
+    setTokenExpirationDate(tokenExpirationDate)
+    setToken(newToken)
+  }, [sendReq])
+
   useEffect(() => {
     if (token && tokenExpirationDate) {
-      const remainingTime = tokenExpirationDate.getTime() - new Date().getTime()
-      logoutTimer = setTimeout(logout, remainingTime)
+      const remainingTime =
+        tokenExpirationDate.getTime() - new Date().getTime() - 1000 * 60 // refresh token every 59 minute
+      refreshTimer = setTimeout(refreshToken, remainingTime)
     } else {
-      clearTimeout(logoutTimer)
+      clearTimeout(refreshTimer)
     }
-  }, [token, logout, tokenExpirationDate])
+  }, [token, tokenExpirationDate])
 
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem('userData'))
@@ -61,7 +86,7 @@ const useAuth = () => {
         new Date(storedData.expiration),
       )
     }
-  }, [login]) // [] => only run once when the cmp is mounted first time
+  }, [login]) // [] => only run once when the component is mounted first time
   return { token, login, logout, userId, user, setUser }
 }
 
