@@ -64,3 +64,11 @@
 .answer-icon {
   margin-left: auto;
 }
+
+.correct_answer {
+  margin-top: 20px !important;
+}
+
+.correct_answer>.ant-radio-wrapper {
+  pointer-events: none;
+}

@@ -32,8 +32,12 @@
 }
 
 .point {
-  background-color: rgb(185, 188, 190);
-  padding: 4px;
+  color: #ebff03
+}
+
+.point {
+  background-color: rgb(163, 168, 172);
+  padding: 4px 8px;
   border-radius: 4px;
 }
 

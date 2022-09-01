@@ -69,8 +69,8 @@ function MultipleChoice({ idx, question, userAnswer }) {
                 </Space>
               </Radio.Group>
               {!userAnswer.isRight && (
-                <>
-                  <p>Correct answer</p>{' '}
+                <div className="correct_answer">
+                  <p style={{ color: 'black' }}>Correct answer</p>{' '}
                   {question.answers.map(
                     (item) =>
                       // <Radio.Group
@@ -92,7 +92,7 @@ function MultipleChoice({ idx, question, userAnswer }) {
                     //   {item.isRight && item.answer}
                     // </Typography>
                   )}
-                </>
+                </div>
               )}
             </>
           )}
