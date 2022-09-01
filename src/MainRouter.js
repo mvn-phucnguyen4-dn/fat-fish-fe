@@ -18,10 +18,12 @@ import { AuthContext } from './context/auth'
 import { BrowserRouter as Router } from 'react-router-dom'
 import Topic from './pages/Topic/Topic'
 import TopicReview from './pages/Review/TopicReview'
+import EditTopic from './pages/EditTopic/EditTopic'
 
 const MainRouter = ({ token }) => {
   let routes
   const { isLoggedIn } = useContext(AuthContext)
+
   if (isLoggedIn) {
     routes = (
       <>
@@ -66,7 +68,9 @@ const MainRouter = ({ token }) => {
           <Route path="/posts/:titleURL/:postId/edit" exact>
             <EditPost />
           </Route>
-
+          <Route path="/topics/:topicId/edit" exact>
+            <EditTopic />
+          </Route>
           <Redirect to="/auth" />
         </Switch>
         <Footer />

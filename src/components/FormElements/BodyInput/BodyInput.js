@@ -1,13 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SimpleMDE from 'react-simplemde-editor'
 import 'easymde/dist/easymde.min.css'
 
 export const BodyInput = (props) => {
   const [value, setValue] = useState('')
-  const [isValid, setIsValid] = useState(false)
-
-  const valueRef = useRef()
-  valueRef.current = { value, isValid }
+  const { hideIcons, maxHeight } = props
 
   useEffect(() => {
     setValue(props.value)
@@ -15,13 +12,14 @@ export const BodyInput = (props) => {
 
   const onChange = (value) => {
     setValue(value)
-    if (valueRef.current.value !== '') {
-      setIsValid(true)
-    } else {
-      setIsValid(false)
-    }
-    props.onChange('body', value, valueRef.current.isValid)
+    props.onChange(value)
   }
 
-  return <SimpleMDE value={value} onChange={onChange} />
+  return (
+    <SimpleMDE
+      value={value}
+      onChange={onChange}
+      options={{ hideIcons: hideIcons, maxHeight: maxHeight || '100px' }}
+    />
+  )
 }

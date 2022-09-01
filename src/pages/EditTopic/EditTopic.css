@@ -1,0 +1,10 @@
+.new-topic-body {
+  border-radius: 0 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+.add-section {
+  align-self: flex-end;
+  border-radius: 50% !important;
+}

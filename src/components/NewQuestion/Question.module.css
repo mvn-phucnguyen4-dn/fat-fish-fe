@@ -1,0 +1,105 @@
+.question-multiple-choice {
+  background: #f4f9f9;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: 0.5px solid #f4f9f9;
+}
+
+.option-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin-bottom: 10px;
+}
+
+.list-option {
+  width: 60%;
+  position: relative;
+  padding-right: 30px;
+}
+
+.answer-description {
+  padding-top: 2rem;
+  width: 40%;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+}
+
+.option .radio {
+  width: 3rem;
+}
+
+.option .option-input {
+  border: transparent;
+  outline: none;
+}
+
+.brise-input {
+  position: relative;
+  margin: 5px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.brise-input input {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  outline: none;
+  border-bottom: 1px solid #999;
+  box-sizing: border-box;
+  font-size: 16px;
+  position: relative;
+  z-index: 5;
+  background: none;
+  border-radius: 0;
+}
+
+.brise-input .line {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background: #0677ba;
+  left: -999px;
+  transition: 0.25s;
+  opacity: 0;
+  z-index: 6;
+}
+
+.brise-input input:focus ~ .line {
+  left: 0;
+  opacity: 1;
+}
+
+.add-option {
+  border: 1px solid rgb(24 144 255) !important;
+  border-radius: 50% !important;
+}
+
+.add-option:hover {
+  color: white !important;
+  background-color: rgb(24 144 255) !important;
+}
+
+.question-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.delete-question {
+  font-size: 3rem;
+}
+
+.action {
+  display: flex;
+  gap: 5px;
+}
