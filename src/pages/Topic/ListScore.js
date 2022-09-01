@@ -18,13 +18,11 @@ function Quiz() {
   useEffect(() => {
     const fetchTopics = async () => {
       try {
-        console.log('check topic', id)
         const response = await fetchDataApi(
           `topics/${id}/scores`,
           currentUser.accessToken,
           'GET',
         )
-        console.log(response.data)
         response && setData(response.data)
       } catch (error) {
         setError(error.message)

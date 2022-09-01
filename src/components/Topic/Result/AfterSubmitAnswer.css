@@ -1,0 +1,12 @@
+.title-result{
+    display: block;
+    font-size: 24px;
+    font-weight: unset;
+    color:rgb(50 66 87);
+}
+.btn-primary{
+    background: rgb(132 153 184);
+}
+.result-container{
+    padding-left: 90px;
+}

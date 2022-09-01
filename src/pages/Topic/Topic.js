@@ -38,7 +38,7 @@ function Quiz() {
           xs={24}
           sm={18}
           xl={14}
-          marginTop={'25px'}
+          margintop={'25px'}
           className="margin-topic"
         >
           {data && (

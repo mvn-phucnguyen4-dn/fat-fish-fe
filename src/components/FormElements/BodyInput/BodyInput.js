@@ -11,45 +11,18 @@ export const BodyInput = (props) => {
       spellChecker: false,
       maxHeight: maxHeight || '100px',
       hideIcons: hideIcons,
-      toolbar: [
-        'bold',
-        'italic',
-        'fullscreen',
-        'table',
-        'code',
-        'unordered-list',
-        'clean-block',
-      ],
     }
   }, [])
   useEffect(() => {
-    onBlur()
-  }, [value])
-  const onfocus = () => {}
+    setValue(props.value)
+  }, [props.value])
   const onBlur = () => {
-    const answerIndex = props.pushData.findIndex(
-      (item) => item.questionId === props.question.id,
-    )
-    if (answerIndex !== -1) {
-      props.pushData[answerIndex].answerText = value
-      props.setPushData(props.pushData)
-      setValue(value)
-    } else {
-      props.setPushData((prev) => [
-        ...prev,
-        {
-          topicId: props.topic,
-          sectionId: props.section,
-          questionId: props.question.id,
-          answerText: value,
-          answerId: null,
-        },
-      ])
-    }
+    props.onBlur(value, props.question)
   }
 
   const onChange = (e) => {
     setValue(e)
+    props.onChange(value, props.question)
   }
   return (
     <SimpleMDE

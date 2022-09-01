@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, useMemo } from 'react'
 import 'antd/dist/antd.min.css'
 import useHttpClient from '../../hooks/useHttpClient'
 import { AuthContext } from '../../context/auth'
@@ -14,36 +14,33 @@ function ShowTopic() {
   const [condition, setCondition] = useState({})
 
   const { currentUser } = useContext(AuthContext)
-  const LIMIT = 12
+  const TOPIC_SIZE = 6
   const { Search } = Input
 
-  const fetchTopics = async () => {
-    try {
-      // console.log('limit', LIMIT)
-      const response = await fetchDataApi(
-        `topics/?size=${LIMIT}`,
-        currentUser.accessToken,
-      )
-      setTopics(response.data)
-      setCondition(response)
-    } catch (error) {
-      setError(error.message)
-    }
-  }
-  // console.log('check limit', condition.meta.limit)
   useEffect(() => {
+    const fetchTopics = async (TOPIC_SIZE) => {
+      try {
+        const response = await fetchDataApi(
+          `topics/?size=${TOPIC_SIZE}`,
+          currentUser.accessToken,
+        )
+        setTopics(response.data)
+        setCondition(response)
+      } catch (error) {
+        setError(error.message)
+      }
+    }
     fetchTopics()
-  }, [])
+  }, [currentUser.accessToken])
   const handlePagination = async (page) => {
     const response = await fetchDataApi(
-      `topics/?page=${page}&size=${LIMIT}`,
+      `topics/?page=${page}&size=${TOPIC_SIZE}`,
       currentUser.accessToken,
       'GET',
     )
     setTopics(response.data)
     setCondition(response)
   }
-  console.log('hello', condition.meta.limit)
   return (
     <>
       <div className="top-content-topic">
@@ -72,7 +69,6 @@ function ShowTopic() {
                     }}
                     headStyle={{ backgroundColor: 'red', height: '20px' }}
                   >
-                    {/* <div className="bg-top-card"></div> */}
                     <NavLink to={`/topic/${item.id}`} className="title-topic">
                       <h3>{item.title}</h3>
                     </NavLink>
@@ -96,13 +92,15 @@ function ShowTopic() {
             } else return []
           })}
       </div>
-      <Pagination
-        style={{ margin: '15px auto' }}
-        pageSize={condition.meta.limit}
-        current={condition.meta.page}
-        total={condition.meta.total}
-        onChange={handlePagination}
-      />
+      {condition && (
+        <Pagination
+          style={{ margin: '15px auto' }}
+          pageSize={condition.meta.limit}
+          current={condition.meta.page}
+          total={condition.meta.total}
+          onChange={handlePagination}
+        />
+      )}
     </>
   )
 }

@@ -3,9 +3,8 @@ import React, { useState } from 'react'
 import { BodyInput } from '../../FormElements/BodyInput/BodyInput'
 import './ShortAnswer.css'
 
-const { Title } = Typography
-
-function ShortAnswer({ idx, question, setPushData, pushData, topic, section }) {
+function ShortAnswer({ idx, question, onChange, onBlur }) {
+  const [value, setValue] = useState('')
   return (
     <>
       <div className="short-answer">
@@ -14,11 +13,10 @@ function ShortAnswer({ idx, question, setPushData, pushData, topic, section }) {
         </p>
         <BodyInput
           key="Body"
-          pushData={pushData}
           question={question}
-          setPushData={setPushData}
-          topic={topic}
-          section={section}
+          onBlur={onBlur}
+          value={value}
+          onChange={onChange}
         />
       </div>
     </>

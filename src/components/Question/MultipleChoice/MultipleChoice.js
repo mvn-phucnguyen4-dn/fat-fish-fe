@@ -2,39 +2,11 @@ import { Radio, Space, Typography, Form } from 'antd'
 import React, { useEffect, useState } from 'react'
 import './MultipleChoice.css'
 
-const { Title } = Typography
-
-function MultipleChoice({
-  idx,
-  question,
-  pushData,
-  setPushData,
-  topic,
-  section,
-}) {
+function MultipleChoice({ idx, question, onChange }) {
   const [value, setValue] = useState([])
-  const onChange = (e) => {
-    console.log('check require', e.target.rules)
-    const answerId = e.target.value
-    const answerIndex = pushData.findIndex(
-      (item) => item.questionId === question.id,
-    )
-    if (answerIndex !== -1) {
-      pushData[answerIndex].answerId = answerId
-      setPushData(pushData)
-    } else {
-      setPushData((prev) => [
-        ...prev,
-        {
-          topicId: topic,
-          sectionId: section,
-          questionId: question.id,
-          answerId: answerId,
-          answerText: null,
-        },
-      ])
-    }
-    setValue(answerId)
+  const onRadio = (e) => {
+    setValue(e.target.value)
+    onChange(e.target.value, question)
   }
   return (
     <div className="multi-choice">
@@ -45,7 +17,7 @@ function MultipleChoice({
               rules={[{ required: true, message: 'Please select an option!' }]}
             >
               <p style={{ fontSize: '15px' }}>{idx + ', ' + question.title}</p>
-              <Radio.Group onChange={onChange} required value={value}>
+              <Radio.Group onChange={onRadio} required value={value}>
                 <Space direction="vertical">
                   {question.answers.map((item, index) => (
                     <Radio

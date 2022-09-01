@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { Button, List, Typography, Modal } from 'antd'
 import ReactDragListView from 'react-drag-listview'
 import MultipleChoice from '../../Question/MultipleChoice/MultipleChoice'
@@ -7,14 +7,15 @@ import { AuthContext } from '../../../context/auth'
 import './TopicBody.css'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { fetchDataApi } from '../../../utils/fetchDataApi'
+import { useHistory } from 'react-router-dom'
 
 const { Text } = Typography
 
 function TopicBody({ sections, topic }) {
   const { currentUser } = useContext(AuthContext)
   const [data, setData] = useState(sections)
-  const [check, setCheck] = useState([])
   const [pushData, setPushData] = useState([])
+  const history = useHistory()
   const onDragEnd = (fromIndex, toIndex) => {
     if (toIndex < 0) return // Ignores if outside designated area
 
@@ -24,7 +25,26 @@ function TopicBody({ sections, topic }) {
     setData(items)
   }
   const { confirm } = Modal
-
+  const initShortAnswerEmpty = () => {
+    const questions = data[0].questions
+    for (let i = 0; i < questions.length; i++) {
+      if (questions[i].type === 'short_answer') {
+        setPushData((prev) => [
+          ...prev,
+          {
+            topicId: topic.id,
+            sectionId: data[0].id,
+            questionId: questions[i].id,
+            answerText: null,
+            answerId: null,
+          },
+        ])
+      }
+    }
+  }
+  useEffect(() => {
+    initShortAnswerEmpty()
+  }, [])
   const showConfirm = () => {
     confirm({
       title: 'Bạn có chắc chắn nộp bài không ?',
@@ -35,11 +55,11 @@ function TopicBody({ sections, topic }) {
       async onOk() {
         await createUserAnswer()
         await calcScore()
+        history.push({ pathname: '/result', state: { topic: topic.title } })
       },
       onCancel() {},
     })
   }
-  console.log('currentUser.accessToken', currentUser.accessToken)
   const createUserAnswer = async () => {
     const api = await fetchDataApi(
       `user-answers`,
@@ -50,7 +70,6 @@ function TopicBody({ sections, topic }) {
         userAnswers: pushData,
       },
     )
-    console.log('check ', api)
   }
   const calcScore = async () => {
     const topicId = topic.id
@@ -62,6 +81,48 @@ function TopicBody({ sections, topic }) {
         data: topicId,
       },
     )
+  }
+  const onChange = (answerId, question) => {
+    if (question.type === 'multi_choice') {
+      const answerIndex = pushData.findIndex(
+        (item) => item.questionId === question.id,
+      )
+      if (answerIndex !== -1) {
+        pushData[answerIndex].answerId = answerId
+        setPushData(pushData)
+      } else {
+        setPushData((prev) => [
+          ...prev,
+          {
+            topicId: topic.id,
+            sectionId: data[0].id,
+            questionId: question.id,
+            answerId: answerId,
+            answerText: null,
+          },
+        ])
+      }
+    }
+  }
+  const onBlur = (value, question) => {
+    const answerIndex = pushData.findIndex(
+      (item) => item.questionId === question.id,
+    )
+    if (answerIndex !== -1) {
+      pushData[answerIndex].answerText = value
+      setPushData(pushData)
+    } else {
+      setPushData((prev) => [
+        ...prev,
+        {
+          topicId: topic.id,
+          sectionId: data[0].id,
+          questionId: question.id,
+          answerText: value,
+          answerId: null,
+        },
+      ])
+    }
   }
   return (
     <>
@@ -95,19 +156,14 @@ function TopicBody({ sections, topic }) {
                             <MultipleChoice
                               idx={index + 1}
                               question={element}
-                              pushData={pushData}
-                              setPushData={setPushData}
-                              topic={item.topicId}
-                              section={item.id}
+                              onChange={onChange}
                             />
                           ) : (
                             <ShortAnswer
                               idx={index + 1}
                               question={element}
-                              pushData={pushData}
-                              setPushData={setPushData}
-                              topic={item.topicId}
-                              section={item.id}
+                              onBlur={onBlur}
+                              onChange={onChange}
                             />
                           )}
                         </div>
