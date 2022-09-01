@@ -1,6 +1,7 @@
 import { Tag, Tooltip, Typography, Divider, Row, Col } from 'antd'
 import React, { useState } from 'react'
 import './TopicHeader.css'
+import { QuestionCircleOutlined } from '@ant-design/icons/lib/icons'
 
 const { Text, Title } = Typography
 
@@ -18,14 +19,25 @@ const tagColors = [
   'purple',
 ]
 
-function TopicHeader({ topic }) {
+function TopicHeader({ topic, score }) {
   const [toggle, setToggle] = useState(false)
 
   return (
     <>
       <div className="topic-square"></div>
       <div className="topic-title">
-        <Title level={1}>{topic.title}</Title>
+        <div className="topic-title-item">
+          <Title level={1}>{topic.title}</Title>
+          {score && (
+            <p>
+              <span className="total">Total points</span>
+              <span className="point">
+                {score}/{topic.totalScore}
+              </span>
+              <QuestionCircleOutlined />
+            </p>
+          )}
+        </div>
         <Text>
           {topic.description.length > 600 && toggle === false ? (
             <p>
