@@ -20,10 +20,9 @@
 .ant-divider-horizontal {
   margin: 24px 0 0 !important;
 }
-.ant-list-item{
+.ant-list-item {
   margin: 10px 0 0 !important ;
 }
-.ant-list-item:first-child{
+.ant-list-item:first-child {
   margin: 20px 0 0 !important ;
 }
-

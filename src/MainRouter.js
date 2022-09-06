@@ -21,6 +21,7 @@ import EditTopic from './pages/EditTopic/EditTopic'
 import ShowTopic from './components/middle/ShowTopic'
 import ListScore from './pages/Topic/ListScore'
 import AfterSubmitAnswer from './components/Topic/Result/AfterSubmitAnswer'
+import ListTopic from './pages/ListTopic/ListTopic'
 
 const MainRouter = ({ token }) => {
   let routes
@@ -36,6 +37,9 @@ const MainRouter = ({ token }) => {
           </Route>
           <Route path="/topics" exact>
             <ShowTopic />
+          </Route>
+          <Route path="/users/topic" exact>
+            <ListTopic />
           </Route>
           <Route path="/topic/:topicId" exact>
             <Topic />
@@ -97,6 +101,9 @@ const MainRouter = ({ token }) => {
           </Route>
           <Route path="/topics" exact>
             <ShowTopic />
+          </Route>
+          <Route path="/users/topic" exact>
+            <ListTopic />
           </Route>
           <Route path="/topic/:topicId" exact>
             <Topic />

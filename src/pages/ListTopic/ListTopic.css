@@ -1,0 +1,11 @@
+.topic-container {
+  background: #ffffff;
+  padding: 0 20px 20px 20px;
+  border-radius: 5px;
+}
+
+.topic-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

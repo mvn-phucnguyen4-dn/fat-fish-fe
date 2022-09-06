@@ -7,20 +7,20 @@
   max-width: 1440px;
   justify-content: space-around;
 }
-.title-topic-main{
+.title-topic-main {
   font-size: 25px !important;
 }
-.topic-body{
+.topic-body {
   /* flex: 0 0 10.3333%; */
   width: 450px;
   /* margin: 20px 10px 0 10px; */
 }
-.top-content-topic{
+.top-content-topic {
   display: flex;
   justify-content: space-between;
   padding: 0 30px;
 }
-.bg-top-card{
+.bg-top-card {
   background-color: rgb(163, 168, 172);
   width: 100%;
   height: 20px;
@@ -39,8 +39,8 @@
   font-size: 13px;
   cursor: pointer;
 }
-.topic-bottom{
+.topic-bottom {
   display: flex;
-  justify-content:flex-end;
+  justify-content: flex-end;
   padding-top: 20px;
 }
