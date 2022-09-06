@@ -19,6 +19,7 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import Topic from './pages/Topic/Topic'
 import EditTopic from './pages/EditTopic/EditTopic'
 import ListTopic from './pages/ListTopic/ListTopic'
+import MarkScore from './pages/MarkScore/MarkScore'
 
 const MainRouter = ({ token }) => {
   let routes
@@ -37,6 +38,9 @@ const MainRouter = ({ token }) => {
           </Route>
           <Route path="/topic/:topicId" exact>
             <Topic />
+          </Route>
+          <Route path="/topic/:topicId/mark" exact>
+            <MarkScore />
           </Route>
           <Route path="/users/:userId" exact>
             <UserProfile />
@@ -89,6 +93,9 @@ const MainRouter = ({ token }) => {
           </Route>
           <Route path="/topic/:topicId" exact>
             <Topic />
+          </Route>
+          <Route path="/topic/:topicId/mark" exact>
+            <MarkScore />
           </Route>
           <Route path="/auth" exact>
             <Auth newUser={false} />

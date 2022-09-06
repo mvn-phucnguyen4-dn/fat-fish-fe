@@ -1,5 +1,8 @@
-import { Tag, Tooltip, Typography, Divider, Row, Col } from 'antd'
-import React, { useState } from 'react'
+import { QuestionCircleOutlined } from '@ant-design/icons'
+import { Tag, Tooltip, Typography, Divider, Row, Col, Switch } from 'antd'
+import React, { useContext, useState } from 'react'
+import { AuthContext } from '../../../context/auth'
+import { fetchDataApi } from '../../../utils/fetchDataApi'
 import './TopicHeader.css'
 
 const { Text, Title } = Typography
@@ -18,14 +21,38 @@ const tagColors = [
   'purple',
 ]
 
-function TopicHeader({ topic }) {
+function TopicHeader({ topic, score, scoreId }) {
   const [toggle, setToggle] = useState(false)
+  const { currentUser } = useContext(AuthContext)
+
+  const onChange = async (checked) => {
+    await fetchDataApi(`topics/${topic.id}`, currentUser.accessToken, 'PUT', {
+      releaseScore: checked,
+    })
+  }
 
   return (
     <>
       <div className="topic-square"></div>
       <div className="topic-title">
-        <Title level={1}>{topic.title}</Title>
+        <div className="topic-title-item">
+          <Title level={1}>{topic.title}</Title>
+          {score && (
+            <p>
+              <span className="total">Total points</span>
+              <span className="point">
+                {score}/{topic.totalScore}
+              </span>
+              <QuestionCircleOutlined />
+            </p>
+          )}
+          {scoreId && (
+            <div className="topic-title-item">
+              <p style={{ margin: '0 10px 0 0' }}>Release score: </p>
+              <Switch defaultChecked={topic.releaseScore} onChange={onChange} />
+            </div>
+          )}
+        </div>
         <Text>
           {topic.description.length > 600 && toggle === false ? (
             <p>

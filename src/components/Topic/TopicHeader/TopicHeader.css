@@ -17,3 +17,33 @@
 .hashtag-item {
   margin: 0 5px 5px 0;
 }
+
+.topic-title-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: black;
+}
+
+.point,
+.total {
+  margin-right: 8px;
+}
+
+.point {
+  color: #ebff03;
+}
+
+.point {
+  background-color: rgb(163, 168, 172);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+@media (max-width: 970px) {
+  .topic-title-item {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+}

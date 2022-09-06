@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { Button, List, Typography } from 'antd'
 import ReactDragListView from 'react-drag-listview'
+import './TopicBody.css'
 import MultipleChoice from '../../Question/MultipleChoice/MultipleChoice'
 import ShortAnswer from '../../Question/ShortAnswer/ShortAnswer'
-import './TopicBody.css'
 
 const { Text } = Typography
 
