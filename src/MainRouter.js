@@ -17,6 +17,7 @@ import Footer from './components/Footer/Footer'
 import { AuthContext } from './context/auth'
 import { BrowserRouter as Router } from 'react-router-dom'
 import Topic from './pages/Topic/Topic'
+import TopicReview from './pages/Review/TopicReview'
 import EditTopic from './pages/EditTopic/EditTopic'
 import ShowTopic from './components/middle/ShowTopic'
 import ListScore from './pages/Topic/ListScore'
@@ -43,6 +44,9 @@ const MainRouter = ({ token }) => {
           </Route>
           <Route path="/topic/:topicId" exact>
             <Topic />
+          </Route>
+          <Route path="/topics/:topicId/review" exact>
+            <TopicReview />
           </Route>
           <Route path="/users/:userId" exact>
             <UserProfile />
@@ -107,6 +111,9 @@ const MainRouter = ({ token }) => {
           </Route>
           <Route path="/topic/:topicId" exact>
             <Topic />
+          </Route>
+          <Route path="/topics/:topicId/review" exact>
+            <TopicReview />
           </Route>
           <Route path="/auth" exact>
             <Auth newUser={false} />

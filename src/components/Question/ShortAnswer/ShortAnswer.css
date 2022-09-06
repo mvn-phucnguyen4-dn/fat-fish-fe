@@ -4,3 +4,22 @@
   margin-bottom: 10px;
   border-radius: 5px;
 }
+
+.short-answer-input {
+  border: none;
+  border-bottom: 1px dotted #919191;
+  background-color: transparent;
+  width: 100%;
+  font-size: 1.4rem;
+  color: #000;
+  pointer-events: none;
+  margin-bottom: 10px;
+}
+
+.correct {
+  color: #1e8e3e !important;
+}
+
+.incorrect {
+  color: #d93025 !important;
+}

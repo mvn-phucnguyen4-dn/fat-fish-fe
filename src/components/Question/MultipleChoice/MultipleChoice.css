@@ -14,3 +14,61 @@
   margin-right: 0;
   font-size: x-large;
 }
+
+.ant-radio-wrapper {
+  padding: 5px;
+}
+
+.ant-space-item .btn-radio-disabled {
+  pointer-events: none;
+}
+
+.correct {
+  color: #1e8e3e !important;
+}
+
+.incorrect {
+  color: #d93025 !important;
+}
+
+.radio-group,
+.radio-item {
+  width: 100%;
+}
+
+.ans-incorrect,
+.ans-correct {
+  width: 100%;
+  border-radius: 5px;
+}
+
+.ans-incorrect {
+  background-color: #fadad7;
+}
+
+.ans-correct {
+  background-color: #d3edda;
+}
+
+.ans-correct span:not([class]),
+.ans-incorrect span:not([class]) {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.item-answer {
+  margin: 0;
+}
+
+.answer-icon {
+  margin-left: auto;
+}
+
+.correct_answer {
+  margin-top: 20px !important;
+}
+
+.correct_answer > .ant-radio-wrapper {
+  pointer-events: none;
+}

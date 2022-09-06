@@ -4,6 +4,7 @@
   height: 20px;
   border-radius: 10px 10px 0 0;
 }
+
 .topic-title {
   background: #ffffff;
   border-radius: 0 0 5px 5px;
@@ -17,6 +18,7 @@
 .hashtag-item {
   margin: 0 5px 5px 0;
 }
+
 .ant-divider-horizontal {
   margin: 24px 0 0 !important;
 }
@@ -25,4 +27,34 @@
 }
 .ant-list-item:first-child {
   margin: 20px 0 0 !important ;
+}
+
+.topic-title-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: black;
+}
+
+.point,
+.total {
+  margin-right: 8px;
+}
+
+.point {
+  color: #ebff03
+}
+
+.point {
+  background-color: rgb(163, 168, 172);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+@media (max-width: 970px) {
+  .topic-title-item {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
 }
