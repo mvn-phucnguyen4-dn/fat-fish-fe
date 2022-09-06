@@ -75,7 +75,7 @@ function TopicItem({ item, setRenderData }) {
       style={{ padding: '10px', minHeight: '170px', maxHeight: '170px' }}
     >
       <List.Item.Meta
-        style={{ margin: '0', minHeight: '45px' }}
+        style={{ margin: '0' }}
         avatar={<Avatar src={'https://joeschmoe.io/api/v1/random'} />}
         title={
           <div className="topic-item-header">
@@ -108,7 +108,6 @@ function TopicItem({ item, setRenderData }) {
           </div>
         }
       />
-      <Divider style={{ margin: '0' }} />
       <div className="test-title">
         <a href={`/topics/${item.id}`}>
           {item.title.length < 20
