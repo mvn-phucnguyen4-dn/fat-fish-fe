@@ -73,24 +73,21 @@ function MultipleChoice({ idx, question, userAnswer }) {
                   <p style={{ color: 'black' }}>Correct answer</p>{' '}
                   {question.answers.map(
                     (item) =>
-                      // <Radio.Group
-                      //   className="radio-group"
-                      //   value={item.answer}
-                      //   key={item.id}
-                      // >
                       item.isRight && (
-                        <Radio
-                          value={item.answer}
-                          checked
-                          className="btn-radio btn-radio-disabled"
-                        >
-                          {item.answer}
-                        </Radio>
+                        <>
+                          <Radio
+                            value={item.answer}
+                            checked
+                            className="btn-radio btn-radio-disabled"
+                          >
+                            {item.answer}
+                          </Radio>
+                          <p style={{ marginTop: '10px', color: 'black' }}>
+                            <b>Description : </b>{' '}
+                            <span>{question.description}</span>
+                          </p>
+                        </>
                       ),
-                    // </Radio.Group>
-                    // <Typography key={item.id}>
-                    //   {item.isRight && item.answer}
-                    // </Typography>
                   )}
                 </div>
               )}

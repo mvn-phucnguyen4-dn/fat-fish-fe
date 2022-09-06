@@ -30,6 +30,13 @@ function ShortAnswer({ idx, question, userAnswer }) {
             readOnly
             autoSize
           ></TextArea>
+          {!userAnswer.isRight && (
+            <>
+              <p style={{ marginTop: '10px', color: 'black' }}>
+                <b>Description : </b> <span>{question.description}</span>
+              </p>
+            </>
+          )}
         </div>
       ) : (
         <div className="short-answer">
