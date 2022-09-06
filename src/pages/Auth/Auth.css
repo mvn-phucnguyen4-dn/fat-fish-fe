@@ -65,8 +65,8 @@
 }
 
 .btn__auth--mode {
-  background-color: var(--color-primary);
-  color: var(--color-white);
+  background-color: var(--color-primary) !important;
+  color: var(--color-white) !important;
 }
 
 .btn__auth--switch {
@@ -87,7 +87,8 @@ button.btn__social {
 }
 
 .btn__google {
-  background-color: #dd4b39;
+  background-color: #dd4b39 !important;
+  border-color: transparent !important;
   color: white;
 }
 

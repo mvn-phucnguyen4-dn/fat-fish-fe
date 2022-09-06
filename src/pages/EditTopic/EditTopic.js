@@ -1,52 +1,130 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import BasicInformation from '../../components/FormElements/BasicInformation/BasicInformation'
 import { PlusOutlined } from '@ant-design/icons'
 import Section from '../../components/Section/Section'
 import './EditTopic.css'
-import { Row, Col, Button } from 'antd'
+import { Row, Col, Button, Tooltip } from 'antd'
 import 'antd/dist/antd.min.css'
 import ReactDragListView from 'react-drag-listview'
 import { useParams } from 'react-router-dom'
+import { fetchDataApi } from '../../utils/fetchDataApi'
+import { auth } from '../../utils/initFirebase'
+import useHttpClient from '../../hooks/useHttpClient'
+import ErrorModal from '../../components/Modal/ErrorModal'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { toastOptions, statePromise } from '../../utils/toastOption'
 
 const EditTopic = () => {
   const { topicId } = useParams()
-  const [sections, setSections] = useState([
-    { title: 'Section title', questionIds: [] },
-  ])
-  const [tags, setTags] = useState([
-    { title: 'tag 1', id: 1 },
-    { title: 'tag 2', id: 2 },
-  ])
+  const { setError, clearError, error } = useHttpClient()
+  const [sections, setSections] = useState([])
+  const [tags, setTags] = useState([])
   const [topic, setTopic] = useState({
     title: 'Topic title',
     description: 'Topic description',
     hashtagIds: [],
-    releaseScore: true,
+    releaseScore: false,
     totalScore: 0,
     isPrivate: false,
   })
 
+  const fetchGetTopicById = async () => {
+    try {
+      const token = await auth.currentUser.getIdToken()
+      const response = await toast.promise(
+        fetchDataApi(`topics/${topicId}`, token, 'GET'),
+        {
+          pending: 'Getting topic',
+          success: 'Get topic success 👌',
+          error: 'Get topic fail 🤯',
+        },
+        toastOptions,
+      )
+      if (response.data) {
+        const {
+          title,
+          description,
+          hashtags,
+          totalScore,
+          isPrivate,
+          releaseScore,
+        } = response.data
+        const hashtagIds = hashtags.map((hashtag) => hashtag.id)
+        setTopic({
+          ...topic,
+          title,
+          description,
+          hashtagIds,
+          releaseScore,
+          totalScore,
+          isPrivate,
+        })
+        setSections([...response.data.sections])
+        setTags([...response.data.hashtags])
+      } else {
+        setError(response.message)
+      }
+    } catch (error) {
+      setError(error.message)
+    }
+  }
+
+  const fetchUpdateTopic = async (updateTopic) => {
+    try {
+      const token = await auth.currentUser.getIdToken()
+      const response = await toast.promise(
+        fetchDataApi(`topics/${topicId}`, token, 'PUT', updateTopic),
+        statePromise,
+        toastOptions,
+      )
+    } catch (error) {
+      setError(error.message)
+    }
+  }
+
+  const fetchPostSection = async () => {
+    try {
+      const token = await auth.currentUser.getIdToken()
+      const response = await toast.promise(
+        fetchDataApi('sections', token, 'POST', {
+          topicId: parseInt(topicId),
+          title: 'Section title',
+          questionIds: [],
+        }),
+        statePromise,
+        toastOptions,
+      )
+      return response.data
+    } catch (error) {
+      setError(error.message)
+    }
+  }
+
+  useEffect(() => {
+    fetchGetTopicById()
+  }, [topicId])
+
+  useEffect(() => {
+    const hashtagIds = tags.map((hashtag) => hashtag.id)
+    setTopic((prev) => ({ ...prev, hashtagIds: [...hashtagIds] }))
+  }, [tags])
+
   const changeTopicTitle = (topicTitle) => {
-    setTopic((prev) => ({
-      ...prev,
-      title: topicTitle,
-    }))
+    const updateTopic = { ...topic, title: topicTitle }
+    fetchUpdateTopic(updateTopic)
+    setTopic(updateTopic)
   }
 
   const changeTopicDescription = (topicDescription) => {
-    setTopic((prev) => ({ ...prev, description: topicDescription }))
+    const updateTopic = { ...topic, description: topicDescription }
+    fetchUpdateTopic(updateTopic)
+    setTopic(updateTopic)
   }
 
-  const changeSectionTitle = (e, index) => {
-    setSections((prev) => {
-      const sections = [...prev.sections]
-      sections[index].title = e.target.value
-      return [...sections]
-    })
-  }
-
-  const addSection = () => {
-    setSections((prev) => [...prev, ''])
+  const addSection = async () => {
+    const section = await fetchPostSection()
+    setSections((prev) => [...prev, section])
   }
 
   const onDragEnd = (fromIndex, toIndex) => {
@@ -60,29 +138,42 @@ const EditTopic = () => {
   }
 
   const removeTag = (tagId) => {
-    setTags((prev) => {
-      const data = prev.filter((tag) => {
-        tag.id != tagId
-      })
-      return data
-    })
-    const hashtagIds = tags.map((hashtag) => hashtag.id)
-    setTopic((prev) => ({ ...prev, hashtagIds }))
+    const updateTags = tags.filter((tag) => tag.id != tagId)
+    const updateTagIds = updateTags.map((tag) => tag.id)
+    const updateTopic = { ...topic, hashtagIds: updateTagIds }
+    fetchUpdateTopic(updateTopic)
+    setTags(updateTags)
+    setTopic({ ...topic, hashtagIds: updateTagIds })
   }
 
   const addTag = (tag) => {
     const tagsTitle = tags.map((tag) => tag.title)
-
     if (!tagsTitle.includes(tag.title)) {
-      setTags((tags) => [...tags, tag])
+      const updateTags = [...tags, tag]
+      const updateTagIds = updateTags.map((tag) => tag.id)
+      const updateTopic = { ...topic, hashtagIds: updateTagIds }
+      fetchUpdateTopic(updateTopic)
+      setTags(updateTags)
+      setTopic({ ...topic, hashtagIds: updateTagIds })
     }
-    const hashtagIds = tags.map((hashtag) => hashtag.id)
-    setTopic((prev) => ({ ...prev, hashtagIds }))
+  }
+
+  const changeTopicIsPrivate = (isPrivate) => {
+    const updateTopic = { ...topic, isPrivate }
+    fetchUpdateTopic(updateTopic)
+    setTopic(updateTopic)
+  }
+
+  const changeTopicReleaseScore = (releaseScore) => {
+    const updateTopic = { ...topic, releaseScore }
+    fetchUpdateTopic(updateTopic)
+    setTopic(updateTopic)
   }
 
   return (
     <>
-      <Row>
+      <ErrorModal error={error} onClose={clearError} />
+      <Row style={{ marginTop: '20px' }}>
         <Col xs={0} sm={3} xl={5}></Col>
         <Col xs={24} sm={18} xl={14} className="new-topic">
           <BasicInformation
@@ -93,32 +184,50 @@ const EditTopic = () => {
             hashtags={tags}
             addTag={addTag}
             removeTag={removeTag}
+            fetchUpdateTopic={fetchUpdateTopic}
+            changeTopicIsPrivate={changeTopicIsPrivate}
+            isPrivate={topic.isPrivate}
+            changeTopicReleaseScore={changeTopicReleaseScore}
+            releaseScore={topic.releaseScore}
           />
           <div className="new-topic-body">
             <ReactDragListView onDragEnd={onDragEnd} nodeSelector=".section">
               {sections &&
-                sections.map((section, index) => (
+                sections.map((section) => (
                   <Section
-                    key={index}
+                    key={section.id}
                     section={section}
-                    changeSectionTitle={changeSectionTitle}
-                    index={index}
                     topicId={topicId}
                   />
                 ))}
             </ReactDragListView>
-            <Button
-              icon={<PlusOutlined />}
-              onClick={addSection}
-              className="add-section"
-            />
+            <Tooltip
+              placement="left"
+              title="Add section"
+              color="rgb(24 144 255)"
+            >
+              <Button
+                icon={<PlusOutlined />}
+                onClick={addSection}
+                className="add-section"
+              />
+            </Tooltip>
           </div>
-          <Button className="btn" type="button">
+          <Button
+            style={{
+              background: 'rgb(24 144 255)',
+              color: '#fff',
+              marginTop: '10px',
+              borderRadius: '6px',
+              fontWeight: '500',
+            }}
+          >
             Submit <span>&rarr;</span>
           </Button>
         </Col>
         <Col xs={0} sm={3} xl={5}></Col>
       </Row>
+      <ToastContainer />
     </>
   )
 }

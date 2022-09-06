@@ -9,14 +9,13 @@
 .option-wrapper {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around;
   margin-bottom: 10px;
 }
 
 .list-option {
-  width: 60%;
-  position: relative;
-  padding-right: 30px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .answer-description {
@@ -27,8 +26,7 @@
 .option {
   display: flex;
   align-items: center;
-  font-size: 2rem;
-  margin-bottom: 2rem;
+  font-size: 1.7rem;
 }
 
 .option .radio {
@@ -42,7 +40,6 @@
 
 .brise-input {
   position: relative;
-  margin: 5px;
   width: 100%;
   overflow: hidden;
 }
@@ -52,7 +49,6 @@
   padding: 10px;
   border: none;
   outline: none;
-  border-bottom: 1px solid #999;
   box-sizing: border-box;
   font-size: 16px;
   position: relative;
@@ -80,19 +76,21 @@
 }
 
 .add-option {
-  border: 1px solid rgb(24 144 255) !important;
   border-radius: 50% !important;
-}
-
-.add-option:hover {
-  color: white !important;
-  background-color: rgb(24 144 255) !important;
+  margin-top: 5px !important;
+  align-self: flex-end !important;
 }
 
 .question-footer {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+}
+
+.answer-key {
+  gap: 10px;
+  display: flex;
+  align-items: center;
 }
 
 .delete-question {

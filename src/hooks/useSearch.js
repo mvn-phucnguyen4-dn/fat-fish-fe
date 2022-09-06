@@ -17,9 +17,7 @@ const useSearch = () => {
         const data = await list({ search: value || undefined })
         setSearchResults(data)
         history.push(`/search/?query=${value}`)
-      } catch (err) {
-        console.log(err)
-      }
+      } catch (err) {}
     } else {
       setSearchResults([])
     }
@@ -32,9 +30,7 @@ const useSearch = () => {
         `${process.env.REACT_APP_BASE_URL}/posts/search?${query}`,
       )
       return responseData.posts
-    } catch (err) {
-      console.log(err)
-    }
+    } catch (err) {}
   }
   return { search }
 }

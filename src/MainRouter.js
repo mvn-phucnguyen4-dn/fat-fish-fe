@@ -23,6 +23,7 @@ import ListTopic from './pages/ListTopic/ListTopic'
 const MainRouter = ({ token }) => {
   let routes
   const { isLoggedIn } = useContext(AuthContext)
+
   if (isLoggedIn) {
     routes = (
       <>
@@ -67,7 +68,7 @@ const MainRouter = ({ token }) => {
           <Route path="/posts/:titleURL/:postId/edit" exact>
             <EditPost />
           </Route>
-          <Route path="/topics/:id" exact>
+          <Route path="/topics/:topicId/edit" exact>
             <EditTopic />
           </Route>
           <Redirect to="/auth" />
@@ -109,9 +110,6 @@ const MainRouter = ({ token }) => {
           </Route>
           <Route path="/posts/:titleURL/:postId" exact>
             <Post />
-          </Route>
-          <Route path="/topics/:id" exact>
-            <EditTopic />
           </Route>
           <Redirect to="/auth" />
         </Switch>

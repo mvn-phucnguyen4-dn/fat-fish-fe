@@ -1,6 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './HashTagInput.css'
 import { Tag } from 'antd'
+import { fetchDataApi } from '../../../utils/fetchDataApi'
+import { auth } from '../../../utils/initFirebase'
+import { useHttpClient } from '../../../hooks/useHttpClient'
+import ErrorModal from '../../Modal/ErrorModal'
 
 const COLORS = [
   'red',
@@ -23,26 +27,45 @@ const ranColor = () => {
 }
 
 const HashTagInput = (props) => {
-  const [suggestTags, setSuggestTags] = useState([
-    { title: 'html', id: 1 },
-    { title: 'css', id: 2 },
-    { title: 'js', id: 3 },
-    { title: 'java', id: 4 },
-    { title: 'python', id: 5 },
-  ])
+  const [suggestTags, setSuggestTags] = useState([])
   const [tagInServer, setTagInServer] = useState([])
   const [isShowSuggest, setIsShowSuggest] = useState(false)
   const { tags, removeTag, addTag } = props
+  const { clearError, setError, error } = useHttpClient()
+
+  useEffect(() => {
+    const fetchGetHashtag = async () => {
+      try {
+        const response = await fetchDataApi('hashtags', null, 'GET')
+        setTagInServer([...response.data])
+      } catch (error) {
+        setError(error.message)
+      }
+    }
+    fetchGetHashtag()
+  }, [])
+
+  const fetchAddHashtag = async (tagTitle) => {
+    try {
+      const tag = { title: tagTitle, iconUrl: '' }
+      const token = await auth.currentUser.getIdToken()
+      const response = await fetchDataApi('hashtags', token, 'POST', tag)
+      return response.data
+    } catch (error) {
+      setError(error.message)
+    }
+  }
 
   const handleAddTag = async (e) => {
-    const tagTitle = e.target.value
+    const tagTitle = e.target.value.trim()
     if (tagTitle.length > MAX_LENGTH_TAG || tagTitle == '') return
     if (e.code === 'Enter' && tagTitle !== '') {
       const tagsInServerTitle = tagInServer.map((tag) => tag.title)
 
       if (!tagsInServerTitle.includes(tagTitle)) {
-        const newTag = await addHashTagAPI(tagTitle)
+        const newTag = await fetchAddHashtag(tagTitle)
         addTag(newTag)
+        setTagInServer([...tagInServer, newTag])
       } else {
         const tag = tagInServer.find((tag) => tag.title === tagTitle)
         addTag(tag)
@@ -66,17 +89,17 @@ const HashTagInput = (props) => {
 
   return (
     <>
+      <ErrorModal error={error} onClose={clearError} />
       <h4>{'Tag'}</h4>
-      <div
-        className="tags__input"
-        onClick={() => setIsShowSuggest(true)}
-        onBlur={() => setIsShowSuggest(false)}
-      >
+      <div className="tags__input" onClick={() => setIsShowSuggest(true)}>
         <input
           type="text"
           placeholder="Press enter to add tags"
           onKeyUp={handleAddTag}
           onChange={suggestTag}
+          onBlur={() => {
+            setIsShowSuggest(false)
+          }}
         />
         <div className={`dropdown-tag ${!isShowSuggest && 'hide-dropdown'}`}>
           {suggestTags &&
@@ -86,7 +109,6 @@ const HashTagInput = (props) => {
                 key={tag.id}
                 onClick={() => {
                   addTag(tag)
-                  console.log(tag)
                 }}
               >
                 {tag.title}
