@@ -20,6 +20,7 @@ const EditTopic = () => {
   const { setError, clearError, error } = useHttpClient()
   const [sections, setSections] = useState([])
   const [tags, setTags] = useState([])
+  const [users, setUsers] = useState([])
   const [topic, setTopic] = useState({
     title: 'Topic title',
     description: 'Topic description',
@@ -46,22 +47,26 @@ const EditTopic = () => {
           title,
           description,
           hashtags,
+          users,
           totalScore,
           isPrivate,
           releaseScore,
         } = response.data
         const hashtagIds = hashtags.map((hashtag) => hashtag.id)
+        const userIds = users.map((user) => user.id)
         setTopic({
           ...topic,
           title,
           description,
           hashtagIds,
+          userIds,
           releaseScore,
           totalScore,
           isPrivate,
         })
         setSections([...response.data.sections])
         setTags([...response.data.hashtags])
+        setUsers([...response.data.users])
       } else {
         setError(response.message)
       }
@@ -158,6 +163,27 @@ const EditTopic = () => {
     }
   }
 
+  const addUser = (user) => {
+    const emails = users.map((user) => user.email)
+    if (!emails.includes(user.email)) {
+      const updateUsers = [...users, user]
+      const updateUserIds = updateUsers.map((user) => user.id)
+      const updateTopic = { ...topic, userIds: updateUserIds }
+      fetchUpdateTopic(updateTopic)
+      setUsers(updateUsers)
+      setTopic({ ...topic, userIds: updateUserIds })
+    }
+  }
+
+  const removeUser = (userId) => {
+    const updateUsers = users.filter((user) => user.id != userId)
+    const updateUserIds = updateUsers.map((user) => user.id)
+    const updateTopic = { ...topic, userIds: updateUserIds }
+    fetchUpdateTopic(updateTopic)
+    setUsers(updateUsers)
+    setTopic({ ...topic, userIds: updateUserIds })
+  }
+
   const changeTopicIsPrivate = (isPrivate) => {
     const updateTopic = { ...topic, isPrivate }
     fetchUpdateTopic(updateTopic)
@@ -189,6 +215,9 @@ const EditTopic = () => {
             isPrivate={topic.isPrivate}
             changeTopicReleaseScore={changeTopicReleaseScore}
             releaseScore={topic.releaseScore}
+            users={users}
+            addUser={addUser}
+            removeUser={removeUser}
           />
           <div className="new-topic-body">
             <ReactDragListView onDragEnd={onDragEnd} nodeSelector=".section">

@@ -3,6 +3,7 @@ import TextareaAutosize from 'react-textarea-autosize'
 import HashTagInput from '../HashTagInput/HashTagInput'
 import { Switch } from 'antd'
 import styles from './BasicInformation.module.css'
+import UserInput from '../UserInput/UserInput'
 
 const BasicInformation = (props) => {
   const [title, setTitle] = useState('')
@@ -14,6 +15,7 @@ const BasicInformation = (props) => {
     changeTopicIsPrivate,
     changeTopicReleaseScore,
     releaseScore,
+    users,
   } = props
 
   useEffect(() => {
@@ -88,6 +90,11 @@ const BasicInformation = (props) => {
           tags={props.hashtags}
           addTag={props.addTag}
           removeTag={props.removeTag}
+        />
+        <UserInput
+          users={users}
+          addUser={props.addUser}
+          removeUser={props.removeUser}
         />
       </div>
     </>

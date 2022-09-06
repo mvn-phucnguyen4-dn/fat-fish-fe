@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import './HashTagInput.css'
 import { ranColor } from '../../../utils/commonFunc'
 import { Tag } from 'antd'
@@ -6,6 +6,9 @@ import { fetchDataApi } from '../../../utils/fetchDataApi'
 import { auth } from '../../../utils/initFirebase'
 import { useHttpClient } from '../../../hooks/useHttpClient'
 import ErrorModal from '../../Modal/ErrorModal'
+import { toast } from 'react-toastify'
+import { toastOptions } from '../../../utils/toastOption'
+import { AuthContext } from '../../../context/auth'
 
 const MAX_LENGTH_TAG = 20
 
@@ -15,14 +18,16 @@ const HashTagInput = (props) => {
   const [isShowSuggest, setIsShowSuggest] = useState(false)
   const { tags, removeTag, addTag } = props
   const { clearError, setError, error } = useHttpClient()
+  const { currentUser } = useContext(AuthContext)
 
   useEffect(() => {
     const fetchGetHashtag = async () => {
       try {
-        const response = await fetchDataApi('hashtags', null, 'GET')
+        const token = currentUser.accessToken
+        const response = await fetchDataApi('hashtags', token, 'GET')
         setTagInServer([...response.data])
       } catch (error) {
-        setError(error.message)
+        toast.error(toastOptions, error.message)
       }
     }
     fetchGetHashtag()
