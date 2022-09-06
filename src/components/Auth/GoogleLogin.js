@@ -1,12 +1,15 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { useHistory } from 'react-router-dom'
 import { GoogleOutlined } from '@ant-design/icons'
 import { Button } from 'antd'
 import { auth } from '../../utils/initFirebase'
 import useHttpClient from '../../hooks/useHttpClient'
-import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
+import { signInWithPopup, GoogleAuthProvider, deleteUser } from 'firebase/auth'
 import ErrorModal from '../../components/Modal/ErrorModal'
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner'
+import { fetchDataApi } from '../../utils/fetchDataApi'
+import { toast } from 'react-toastify'
+import { toastOptionError } from '../../utils/toastOption'
 
 const GoogleLogin = (props) => {
   const { clearError, setError, error, isLoading, setIsLoading } =
@@ -17,11 +20,25 @@ const GoogleLogin = (props) => {
     try {
       setIsLoading(true)
       const provider = new GoogleAuthProvider()
-      const user = await signInWithPopup(auth, provider)
-      if (user) props.onLoginAPI()
-      else setIsLoading(false)
+      const userCredentials = await signInWithPopup(auth, provider)
+
+      if (userCredentials) {
+        const response = await fetchDataApi('users', 'GET')
+        const users = response.data
+        const user = users.find(
+          (user) => user.email === userCredentials.user.email,
+        )
+        if (!user) {
+          deleteUser(userCredentials.user)
+          toast.error(
+            'Your user not exist in my system, Please sign up new account',
+            toastOptionError,
+          )
+          setIsLoading(false)
+          history.push('/auth/new-user')
+        } else props.onLoginAPI()
+      }
     } catch (error) {
-      setIsLoading(false)
       setError(error.message.replace('Firebase:', ''))
       history.push('/auth')
     }
