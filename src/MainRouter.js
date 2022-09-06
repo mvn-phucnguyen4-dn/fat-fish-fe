@@ -25,6 +25,7 @@ import AfterSubmitAnswer from './components/Topic/Result/AfterSubmitAnswer'
 const MainRouter = ({ token }) => {
   let routes
   const { isLoggedIn } = useContext(AuthContext)
+
   if (isLoggedIn) {
     routes = (
       <>
@@ -69,7 +70,7 @@ const MainRouter = ({ token }) => {
           <Route path="/posts/:titleURL/:postId/edit" exact>
             <EditPost />
           </Route>
-          <Route path="/topics/:id" exact>
+          <Route path="/topics/:topicId/edit" exact>
             <EditTopic />
           </Route>
           <Route path="/topics/:id/scores" exact>
