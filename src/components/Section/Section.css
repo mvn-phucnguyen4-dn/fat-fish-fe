@@ -6,6 +6,11 @@
   border-radius: 5px;
   background-color: white;
 }
+.title-section {
+  font-size: 2rem;
+}
+
 .add-question {
   align-self: flex-end;
+  border-radius: 50%;
 }
