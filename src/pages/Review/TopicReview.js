@@ -5,7 +5,7 @@ import TopicHeader from '../../components/Topic/TopicHeader/TopicHeader'
 import TopicBodyReview from '../../components/Topic/TopicReview/TopicReview'
 import useHttpClient from '../../hooks/useHttpClient'
 import { AuthContext } from '../../context/auth'
-import { useParams } from 'react-router-dom'
+import { useParams, useLocation } from 'react-router-dom'
 import { fetchDataApi } from '../../utils/fetchDataApi'
 import './TopicReview.css'
 
@@ -15,21 +15,39 @@ function TopicReview() {
   const [userAnswer, setUserAnswer] = useState()
   const { currentUser } = useContext(AuthContext)
   const { topicId } = useParams()
+  const { search } = useLocation()
+  const url = React.useMemo(() => new URLSearchParams(search), [search])
 
   useEffect(() => {
     const token = JSON.parse(localStorage.getItem('userData')).accessToken
     const fetchTopics = async () => {
       try {
-        const topicData = await fetchDataApi(
-          `topics/${topicId}`,
-          token,
-          //  currentUser.accessToken,
-        )
-        const userAnswerData = await fetchDataApi(
-          `topics/${topicId}/review`,
-          token,
-          // currentUser.accessToken,
-        )
+        const userId = url.get('userId')
+        let topicData
+        let userAnswerData
+        if (!userId) {
+          topicData = await fetchDataApi(
+            `topics/${topicId}`,
+            token,
+            //  currentUser.accessToken,
+          )
+          userAnswerData = await fetchDataApi(
+            `topics/${topicId}/review`,
+            token,
+            // currentUser.accessToken,
+          )
+        } else {
+          topicData = await fetchDataApi(
+            `topics/${topicId}?userId=${userId}`,
+            token,
+            //  currentUser.accessToken,
+          )
+          userAnswerData = await fetchDataApi(
+            `topics/${topicId}/review?userId=${userId}`,
+            token,
+            // currentUser.accessToken,
+          )
+        }
         userAnswerData && setUserAnswer(userAnswerData.data)
         topicData && setTopic(topicData.data)
       } catch (error) {
