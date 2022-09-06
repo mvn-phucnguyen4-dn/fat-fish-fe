@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { Button, List, Typography, Modal } from 'antd'
+import { Button, List, Typography, Modal, Alert } from 'antd'
 import ReactDragListView from 'react-drag-listview'
 import MultipleChoice from '../../Question/MultipleChoice/MultipleChoice'
 import ShortAnswer from '../../Question/ShortAnswer/ShortAnswer'
@@ -14,6 +14,8 @@ const { Text } = Typography
 function TopicBody({ sections, topic }) {
   const { currentUser } = useContext(AuthContext)
   const [data, setData] = useState(sections)
+  const [isShowAlert, setIsShowAlert] = useState(false)
+
   const [pushData, setPushData] = useState([])
   const history = useHistory()
   const onDragEnd = (fromIndex, toIndex) => {
@@ -26,19 +28,21 @@ function TopicBody({ sections, topic }) {
   }
   const { confirm } = Modal
   const initShortAnswerEmpty = () => {
-    const questions = data[0].questions
-    for (let i = 0; i < questions.length; i++) {
-      if (questions[i].type === 'short_answer') {
-        setPushData((prev) => [
-          ...prev,
-          {
-            topicId: topic.id,
-            sectionId: data[0].id,
-            questionId: questions[i].id,
-            answerText: null,
-            answerId: null,
-          },
-        ])
+    for (let i = 0; i < data.length; i++) {
+      const questions = data[i].questions
+      for (let i = 0; i < questions.length; i++) {
+        if (questions[i].type === 'short_answer') {
+          setPushData((prev) => [
+            ...prev,
+            {
+              topicId: topic.id,
+              sectionId: data[0].id,
+              questionId: questions[i].id,
+              answerText: null,
+              answerId: null,
+            },
+          ])
+        }
       }
     }
   }
@@ -53,15 +57,18 @@ function TopicBody({ sections, topic }) {
       okType: 'primary',
       cancelText: 'Không',
       async onOk() {
-        await createUserAnswer()
+        const data = await createUserAnswer()
         await calcScore()
-        history.push({ pathname: '/result', state: { topic: topic.title } })
+        if (data.meta.submit_flag) {
+          setIsShowAlert(true)
+        }
+        // history.push({ pathname: '/result', state: { topic: topic.title } })
       },
       onCancel() {},
     })
   }
   const createUserAnswer = async () => {
-    const api = await fetchDataApi(
+    const res = await fetchDataApi(
       `user-answers`,
       currentUser.accessToken,
       'POST',
@@ -70,6 +77,7 @@ function TopicBody({ sections, topic }) {
         userAnswers: pushData,
       },
     )
+    return res
   }
   const calcScore = async () => {
     const topicId = topic.id
@@ -183,6 +191,14 @@ function TopicBody({ sections, topic }) {
             </Button>
           </ReactDragListView>
         </div>
+      )}
+      {isShowAlert == true && (
+        <Alert
+          type="error"
+          message="Ban da nop bai roi"
+          onClose={() => setIsShowAlert(false)}
+          showIcon={true}
+        />
       )}
     </>
   )
