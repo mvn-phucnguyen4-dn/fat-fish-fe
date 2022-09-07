@@ -1,20 +1,21 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import Question from '../NewQuestion/Question'
 import TextareaAutosize from 'react-textarea-autosize'
 import { Button, Tooltip } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import './Section.css'
 import { fetchDataApi } from '../../utils/fetchDataApi'
-import { auth } from '../../utils/initFirebase'
 import useHttpClient from '../../hooks/useHttpClient'
 import ErrorModal from '../Modal/ErrorModal'
 import { toast } from 'react-toastify'
 import { toastOptions, statePromise } from '../../utils/toastOption'
+import { AuthContext } from '../../context/auth'
 
 const Section = (props) => {
   const [section, setSection] = useState({})
   const [questions, setQuestions] = useState([])
   const { setError, clearError, error } = useHttpClient()
+  const { currentUser } = useContext(AuthContext)
 
   useEffect(() => {
     const questionIds = props.section.questions.map((question) => question.id)
@@ -25,7 +26,7 @@ const Section = (props) => {
 
   const fetchUpdateSection = async (section) => {
     try {
-      const token = await auth.currentUser.getIdToken()
+      const token = currentUser.accessToken
       const response = await toast.promise(
         fetchDataApi(`sections/${section.id}`, token, 'PUT', {
           title: section.title,
@@ -41,7 +42,7 @@ const Section = (props) => {
 
   const fetchPostQuestion = async () => {
     try {
-      const token = await auth.currentUser.getIdToken()
+      const token = currentUser.accessToken
       const response = await toast.promise(
         fetchDataApi('questions', token, 'POST', {
           type: 'multi_choice',

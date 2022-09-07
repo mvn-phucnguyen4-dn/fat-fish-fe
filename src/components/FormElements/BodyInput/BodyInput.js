@@ -6,6 +6,10 @@ export const BodyInput = (props) => {
   const [value, setValue] = useState('')
   const { hideIcons, maxHeight } = props
 
+  useEffect(() => {
+    setValue(props.value)
+  }, [props.value])
+
   const autofocusNoSpellcheckerOptions = useMemo(() => {
     return {
       spellChecker: false,
@@ -13,17 +17,15 @@ export const BodyInput = (props) => {
       hideIcons: hideIcons,
     }
   }, [])
-  useEffect(() => {
-    setValue(props.value)
-  }, [props.value])
-  const onBlur = () => {
-    props.onBlur(value, props.question)
+
+  const onChange = (value) => {
+    setValue(value)
   }
 
-  const onChange = (e) => {
-    setValue(e)
-    props.onChange(value, props.question)
+  const onBlur = () => {
+    props.handleChange(value)
   }
+
   return (
     <SimpleMDE
       value={value}

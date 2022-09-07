@@ -58,11 +58,12 @@ function TopicBody({ sections, topic }) {
       cancelText: 'Không',
       async onOk() {
         const data = await createUserAnswer()
+        console.log(data)
         await calcScore()
         if (data.meta.submit_flag) {
           setIsShowAlert(true)
         }
-        // history.push({ pathname: '/result', state: { topic: topic.title } })
+        history.push({ pathname: '/result', state: { topic: topic.title } })
       },
       onCancel() {},
     })

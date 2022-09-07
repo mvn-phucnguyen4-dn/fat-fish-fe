@@ -95,6 +95,7 @@ const BasicInformation = (props) => {
           users={users}
           addUser={props.addUser}
           removeUser={props.removeUser}
+          userId={props.userId}
         />
       </div>
     </>

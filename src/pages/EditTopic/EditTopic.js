@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import BasicInformation from '../../components/FormElements/BasicInformation/BasicInformation'
 import { PlusOutlined } from '@ant-design/icons'
 import Section from '../../components/Section/Section'
@@ -6,14 +6,14 @@ import './EditTopic.css'
 import { Row, Col, Button, Tooltip } from 'antd'
 import 'antd/dist/antd.min.css'
 import ReactDragListView from 'react-drag-listview'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { fetchDataApi } from '../../utils/fetchDataApi'
-import { auth } from '../../utils/initFirebase'
 import useHttpClient from '../../hooks/useHttpClient'
 import ErrorModal from '../../components/Modal/ErrorModal'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { toastOptions, statePromise } from '../../utils/toastOption'
+import { AuthContext } from '../../context/auth'
 
 const EditTopic = () => {
   const { topicId } = useParams()
@@ -29,10 +29,12 @@ const EditTopic = () => {
     totalScore: 0,
     isPrivate: false,
   })
+  const [userId, setUserId] = useState()
+  const { currentUser } = useContext(AuthContext)
 
   const fetchGetTopicById = async () => {
     try {
-      const token = await auth.currentUser.getIdToken()
+      const token = currentUser.accessToken
       const response = await toast.promise(
         fetchDataApi(`topics/${topicId}`, token, 'GET'),
         {
@@ -51,6 +53,7 @@ const EditTopic = () => {
           totalScore,
           isPrivate,
           releaseScore,
+          userId,
         } = response.data
         const hashtagIds = hashtags.map((hashtag) => hashtag.id)
         const userIds = users.map((user) => user.id)
@@ -67,6 +70,7 @@ const EditTopic = () => {
         setSections([...response.data.sections])
         setTags([...response.data.hashtags])
         setUsers([...response.data.users])
+        setUserId(userId)
       } else {
         setError(response.message)
       }
@@ -77,7 +81,7 @@ const EditTopic = () => {
 
   const fetchUpdateTopic = async (updateTopic) => {
     try {
-      const token = await auth.currentUser.getIdToken()
+      const token = currentUser.accessToken
       const response = await toast.promise(
         fetchDataApi(`topics/${topicId}`, token, 'PUT', updateTopic),
         statePromise,
@@ -90,7 +94,7 @@ const EditTopic = () => {
 
   const fetchPostSection = async () => {
     try {
-      const token = await auth.currentUser.getIdToken()
+      const token = currentUser.accessToken
       const response = await toast.promise(
         fetchDataApi('sections', token, 'POST', {
           topicId: parseInt(topicId),
@@ -218,6 +222,7 @@ const EditTopic = () => {
             users={users}
             addUser={addUser}
             removeUser={removeUser}
+            userId={userId}
           />
           <div className="new-topic-body">
             <ReactDragListView onDragEnd={onDragEnd} nodeSelector=".section">
@@ -251,7 +256,9 @@ const EditTopic = () => {
               fontWeight: '500',
             }}
           >
-            Submit <span>&rarr;</span>
+            <Link to={`/users/topic`}>
+              Submit <span>&rarr;</span>
+            </Link>
           </Button>
         </Col>
         <Col xs={0} sm={3} xl={5}></Col>

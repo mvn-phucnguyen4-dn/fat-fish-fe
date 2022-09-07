@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { Tag } from 'antd'
 import { fetchDataApi } from '../../../utils/fetchDataApi'
 import { toast } from 'react-toastify'
 import { toastOptions } from '../../../utils/toastOption'
+import { AuthContext } from '../../../context/auth'
 
 const COLORS = [
   'red',
@@ -28,7 +29,8 @@ const UserInput = (props) => {
   const [suggestUsers, setSuggestUsers] = useState([])
   const [userInServer, setUserInServer] = useState([])
   const [isShowSuggest, setIsShowSuggest] = useState(false)
-  const { users, addUser, removeUser } = props
+  const { currentUser } = useContext(AuthContext)
+  const { users, addUser, removeUser, userId } = props
 
   useEffect(() => {
     const fetchGetUsers = async () => {
@@ -74,15 +76,17 @@ const UserInput = (props) => {
     <>
       <h4>Contributors</h4>
       <div className="tags__input" onClick={() => setIsShowSuggest(true)}>
-        <input
-          type="text"
-          placeholder="Press enter to add contributors"
-          onKeyUp={handleAddUser}
-          onChange={suggestUser}
-          onBlur={() => {
-            setIsShowSuggest(false)
-          }}
-        />
+        {userId == currentUser.userId && (
+          <input
+            type="text"
+            placeholder="Press enter to add contributors"
+            onKeyUp={handleAddUser}
+            onChange={suggestUser}
+            onBlur={() => {
+              setIsShowSuggest(false)
+            }}
+          />
+        )}
         <div className={`dropdown-tag ${!isShowSuggest && 'hide-dropdown'}`}>
           {suggestUsers &&
             suggestUsers.slice(0, 5).map((user, index) => (
@@ -100,16 +104,22 @@ const UserInput = (props) => {
 
         <ul className="input__list">
           {users &&
-            users.map((user) => (
-              <Tag
-                key={user.id}
-                closable
-                onClose={() => removeUser(user.id)}
-                color={ranColor()}
-              >
-                {user.email}
-              </Tag>
-            ))}
+            users.map((user) =>
+              userId == currentUser.userId ? (
+                <Tag
+                  key={user.id}
+                  closable
+                  onClose={() => removeUser(user.id)}
+                  color={ranColor()}
+                >
+                  {user.email}
+                </Tag>
+              ) : (
+                <Tag key={user.id} color={ranColor()}>
+                  {user.email}
+                </Tag>
+              ),
+            )}
         </ul>
       </div>
     </>

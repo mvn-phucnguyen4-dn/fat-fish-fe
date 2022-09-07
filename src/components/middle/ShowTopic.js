@@ -92,7 +92,7 @@ function ShowTopic() {
             } else return []
           })}
       </div>
-      {condition && (
+      {condition.meta && (
         <Pagination
           style={{ margin: '15px auto' }}
           pageSize={condition.meta.limit}

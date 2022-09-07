@@ -35,7 +35,8 @@ function AddTopicModal({ isModalVisible, setIsModalVisible, setRenderData }) {
         values,
       )
       if (response) {
-        const newValue = { ...values, hashtags: [] }
+        const { id } = response.data
+        const newValue = { ...values, hashtags: [], id }
         setRenderData((oldData) => [...oldData, newValue])
         setIsModalVisible(false)
       }

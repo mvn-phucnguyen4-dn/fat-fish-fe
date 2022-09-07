@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { BodyInput } from '../FormElements/BodyInput/BodyInput'
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
 import styles from './Question.module.css'
@@ -10,6 +10,7 @@ import useHttpClient from '../../hooks/useHttpClient'
 import ErrorModal from '../Modal/ErrorModal'
 import { toast } from 'react-toastify'
 import { toastOptions, statePromise } from '../../utils/toastOption'
+import { AuthContext } from '../../context/auth'
 
 const { Option } = Select
 const TYPE_MULTIPLE_CHOICE = 'multi_choice'
@@ -20,6 +21,7 @@ const Question = (props) => {
   const [showModal, setShowModal] = useState(false)
   const [question, setQuestion] = useState({})
   const [answers, setAnswers] = useState([])
+  const { currentUser } = useContext(AuthContext)
   const { removeQuestion, id: questionId, updateQuestions } = props
   const { setError, clearError, error } = useHttpClient()
 
@@ -45,7 +47,7 @@ const Question = (props) => {
 
   const fetchUpdateQuestion = async (updateQuestion) => {
     try {
-      const token = await auth.currentUser.getIdToken()
+      const token = currentUser.accessToken
       const response = await toast.promise(
         fetchDataApi(`questions/${questionId}`, token, 'PUT', updateQuestion),
         statePromise,
@@ -61,7 +63,7 @@ const Question = (props) => {
 
   const fetchUpdateQuestionAnswer = async (updateAnswers) => {
     try {
-      const token = await auth.currentUser.getIdToken()
+      const token = currentUser.accessToken
       const response = await toast.promise(
         fetchDataApi(`questions/${questionId}/answers`, token, 'PUT', {
           answers: updateAnswers,
@@ -244,7 +246,7 @@ const Question = (props) => {
             )}
             <Tooltip
               placement="top"
-              title={`${!question.isPrivate ? 'Open' : 'Close'} question`}
+              title={`${!question.isPrivate ? 'Close' : 'Open'} question`}
               color="rgb(24 144 255)"
             >
               <Switch checked={question.isPrivate} onChange={changeIsPrivate} />

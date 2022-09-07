@@ -43,7 +43,6 @@ function ListTopic() {
           currentUser.accessToken,
           'GET',
         )
-        await console.log(response)
         setScores(response)
       } catch (error) {
         setError(error.message)
@@ -138,7 +137,7 @@ function ListTopic() {
                         : item.topic?.description
                     }
                   />
-                  <div>score: {item.score}</div>
+                  <div>Score: {item.score}</div>
                 </List.Item>
               )}
             />
