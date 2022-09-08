@@ -39,7 +39,7 @@ function ListScore() {
           setData((oldArray) => [
             ...oldArray,
             {
-              score: item.score,
+              scoreId: item.id,
               userId: item.userId,
               topicId: item.topicId,
               topic: topic.data.title,
@@ -80,7 +80,7 @@ function ListScore() {
       render: (_, record) => (
         <Space size="middle">
           <Link
-            to={`/topic/${record.topicId}/mark?score=${record.score}&userId=${record.userId}`}
+            to={`/topic/${record.topicId}/mark?scoreId=${record.scoreId}&userId=${record.userId}`}
           >
             Mark
           </Link>

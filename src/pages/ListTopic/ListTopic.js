@@ -43,6 +43,7 @@ function ListTopic() {
           currentUser.accessToken,
           'GET',
         )
+        console.log(response)
         setScores(response)
       } catch (error) {
         setError(error.message)

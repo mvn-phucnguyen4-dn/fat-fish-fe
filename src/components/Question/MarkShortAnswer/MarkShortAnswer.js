@@ -26,7 +26,7 @@ function MarkShortAnswer({ idx, topic, question, userAnswer }) {
       { isRight: checked },
     )
     await fetchDataApi(
-      `scores/${query.get('scoreId')}`,
+      `topics/${topic.id}/scores/${query.get('scoreId')}`,
       currentUser.accessToken,
       'PUT',
     )

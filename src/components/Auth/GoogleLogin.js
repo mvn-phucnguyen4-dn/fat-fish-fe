@@ -39,6 +39,7 @@ const GoogleLogin = (props) => {
         } else props.onLoginAPI()
       }
     } catch (error) {
+      setIsLoading(false)
       setError(error.message.replace('Firebase:', ''))
       history.push('/auth')
     }
