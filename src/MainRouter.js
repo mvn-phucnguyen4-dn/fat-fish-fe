@@ -23,6 +23,7 @@ import ShowTopic from './components/middle/ShowTopic'
 import ListScore from './pages/Topic/ListScore'
 import AfterSubmitAnswer from './components/Topic/Result/AfterSubmitAnswer'
 import ListTopic from './pages/ListTopic/ListTopic'
+import MarkScore from './pages/MarkScore/MarkScore'
 
 const MainRouter = ({ token }) => {
   let routes
@@ -47,6 +48,9 @@ const MainRouter = ({ token }) => {
           </Route>
           <Route path="/topics/:topicId/review" exact>
             <TopicReview />
+          </Route>
+          <Route path="/topic/:topicId/mark" exact>
+            <MarkScore />
           </Route>
           <Route path="/users/:userId" exact>
             <UserProfile />
@@ -114,6 +118,9 @@ const MainRouter = ({ token }) => {
           </Route>
           <Route path="/topics/:topicId/review" exact>
             <TopicReview />
+          </Route>
+          <Route path="/topic/:topicId/mark" exact>
+            <MarkScore />
           </Route>
           <Route path="/auth" exact>
             <Auth newUser={false} />

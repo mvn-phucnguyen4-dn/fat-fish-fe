@@ -3,7 +3,7 @@ import useHttpClient from './useHttpClient'
 import { auth } from '../utils/initFirebase'
 import { signOut } from 'firebase/auth'
 
-let refreshTimer
+let refreshTimer, logoutTimer
 
 const useAuth = () => {
   const [token, setToken] = useState(false)
@@ -75,6 +75,15 @@ const useAuth = () => {
       clearTimeout(refreshTimer)
     }
   }, [token, tokenExpirationDate])
+
+  // useEffect(() => {
+  //   if (token && tokenExpirationDate) {
+  //     const remainingTime = tokenExpirationDate.getTime() - new Date().getTime()
+  //     logoutTimer = setTimeout(logout, remainingTime)
+  //   } else {
+  //     clearTimeout(logoutTimer)
+  //   }
+  // }, [token, logout, tokenExpirationDate])
 
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem('userData'))

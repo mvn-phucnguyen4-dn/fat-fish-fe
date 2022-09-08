@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { Button, List, Typography, Modal, Alert } from 'antd'
 import ReactDragListView from 'react-drag-listview'
+import './TopicBody.css'
 import MultipleChoice from '../../Question/MultipleChoice/MultipleChoice'
 import ShortAnswer from '../../Question/ShortAnswer/ShortAnswer'
 import { AuthContext } from '../../../context/auth'
@@ -57,10 +58,11 @@ function TopicBody({ sections, topic }) {
       okType: 'primary',
       cancelText: 'Không',
       async onOk() {
-        const data = await createUserAnswer()
-        console.log(data)
-        await calcScore()
-        if (data.meta.submit_flag) {
+        const response = await createUserAnswer()
+        if (response.data) {
+          await calcScore()
+        }
+        if (response.meta && response.meta.submit_flag) {
           setIsShowAlert(true)
         }
         history.push({ pathname: '/result', state: { topic: topic.title } })
@@ -97,8 +99,10 @@ function TopicBody({ sections, topic }) {
         (item) => item.questionId === question.id,
       )
       if (answerIndex !== -1) {
-        pushData[answerIndex].answerId = answerId
-        setPushData(pushData)
+        setPushData((prev) => {
+          prev[answerIndex].answerId = answerId
+          return prev
+        })
       } else {
         setPushData((prev) => [
           ...prev,
@@ -106,17 +110,19 @@ function TopicBody({ sections, topic }) {
             topicId: topic.id,
             sectionId: data[0].id,
             questionId: question.id,
-            answerId: answerId,
+            answerId: answerId ? answerId : null,
             answerText: null,
           },
         ])
       }
     }
   }
+
   const onBlur = (value, question) => {
     const answerIndex = pushData.findIndex(
       (item) => item.questionId === question.id,
     )
+
     if (answerIndex !== -1) {
       pushData[answerIndex].answerText = value
       setPushData(pushData)

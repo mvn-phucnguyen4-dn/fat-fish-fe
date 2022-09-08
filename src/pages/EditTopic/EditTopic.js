@@ -6,7 +6,7 @@ import './EditTopic.css'
 import { Row, Col, Button, Tooltip } from 'antd'
 import 'antd/dist/antd.min.css'
 import ReactDragListView from 'react-drag-listview'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useHistory } from 'react-router-dom'
 import { fetchDataApi } from '../../utils/fetchDataApi'
 import useHttpClient from '../../hooks/useHttpClient'
 import ErrorModal from '../../components/Modal/ErrorModal'
@@ -31,6 +31,7 @@ const EditTopic = () => {
   })
   const [userId, setUserId] = useState()
   const { currentUser } = useContext(AuthContext)
+  const history = useHistory()
 
   const fetchGetTopicById = async () => {
     try {
@@ -200,6 +201,27 @@ const EditTopic = () => {
     setTopic(updateTopic)
   }
 
+  const calTotalScore = async () => {
+    try {
+      const token = currentUser.accessToken
+      const response = await fetchDataApi(`topics/${topicId}`, token, 'GET')
+      let questions = []
+      response.data.sections.forEach((section) => {
+        questions = [...questions, ...section.questions]
+      })
+
+      const totalScore = questions.reduce((sum, question) => {
+        return question.score + sum
+      }, 0)
+      const updateTopic = { ...topic, totalScore }
+      await fetchUpdateTopic(updateTopic)
+      setTopic(updateTopic)
+      history.push('/users/topic')
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <>
       <ErrorModal error={error} onClose={clearError} />
@@ -255,10 +277,9 @@ const EditTopic = () => {
               borderRadius: '6px',
               fontWeight: '500',
             }}
+            onClick={calTotalScore}
           >
-            <Link to={`/users/topic`}>
-              Submit <span>&rarr;</span>
-            </Link>
+            Submit <span>&rarr;</span>
           </Button>
         </Col>
         <Col xs={0} sm={3} xl={5}></Col>

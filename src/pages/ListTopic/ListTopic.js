@@ -137,7 +137,9 @@ function ListTopic() {
                         : item.topic?.description
                     }
                   />
-                  <div>Score: {item.score}</div>
+                  <div>
+                    Score: {item.score}/{item.topic.totalScore}
+                  </div>
                 </List.Item>
               )}
             />

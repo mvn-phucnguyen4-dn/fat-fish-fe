@@ -119,7 +119,7 @@ function TopicItem({ item, setRenderData }) {
 
       <div className="hashtag">
         <Row>
-          <Col span={24}>
+          <Col span={20}>
             {item.hashtags.slice(0, 3).map((tag) => {
               const isLongTag = tag.title.length > 20
               const tagElem = (
@@ -144,6 +144,9 @@ function TopicItem({ item, setRenderData }) {
               )
             })}
             {item.hashtags.length > 3 ? '...' : ''}
+          </Col>
+          <Col span={4}>
+            <Link to={`/topics/${item.id}/scores`}>GRADES</Link>
           </Col>
         </Row>
       </div>

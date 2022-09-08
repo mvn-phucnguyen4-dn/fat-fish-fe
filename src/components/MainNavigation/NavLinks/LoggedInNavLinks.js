@@ -29,30 +29,8 @@ export const LoggedInNavLinks = ({
     logout()
   }
 
-  const createTopic = async () => {
-    try {
-      const token = await auth.currentUser.getIdToken()
-      const topic = {
-        title: 'Topic title',
-        description: 'Topic description',
-        totalScore: 0,
-        isPrivate: true,
-        hashtagIds: [],
-      }
-      const response = await fetchDataApi('topics', token, 'POST', topic)
-      if (response.data) {
-        history.push(`/topics/${1}/edit`)
-      }
-    } catch (error) {}
-  }
-
   return (
     <React.Fragment>
-      <li className="list__item list__item--mobile item--create">
-        <button className="create-link" onClick={createTopic}>
-          Create Post
-        </button>
-      </li>
       <li
         className="list__item list__item--notifs hvr-bg-lt"
         onClick={handleClick}

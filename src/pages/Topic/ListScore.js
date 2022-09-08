@@ -1,87 +1,113 @@
 import React, { useContext, useEffect, useState } from 'react'
 import 'antd/dist/antd.min.css'
-import { Table } from 'antd'
+import { Col, Row, Space, Table } from 'antd'
 import useHttpClient from '../../hooks/useHttpClient'
 import { AuthContext } from '../../context/auth'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { fetchDataApi } from '../../utils/fetchDataApi'
 import './ListScore.css'
-
 function ListScore() {
   const { setError } = useHttpClient()
   const [data, setData] = useState([])
-  const [topic, setTopic] = useState({})
-  const [sum, setSum] = useState([])
-  const [users, setUsers] = useState([])
   const { currentUser } = useContext(AuthContext)
   const { id } = useParams()
   const [loading, setloading] = useState(true)
+
   useEffect(async () => {
-    currentUser && fetchScore() && setloading(false)
+    currentUser && fetchData()
   }, [currentUser, id])
-  const fetchScore = async () => {
+  const fetchData = async () => {
     try {
       const response = await fetchDataApi(
         `topics/${id}/scores`,
         currentUser.accessToken,
         'GET',
       )
-      setData(response.data)
+      setloading(false)
       if (response) {
-        console.log('response', response)
-        for (let i = 0; i < response.length; i++) {
-          console.log('hello')
-          const res = await fetchDataApi(
-            `users/${data[i].userId}`,
+        for (const item of response.data) {
+          const user = await fetchDataApi(
+            `users/${item.userId}`,
             currentUser.accessToken,
             'GET',
           )
-          setUsers((prev) => [...prev, res.data])
+          const topic = await fetchDataApi(
+            `topics/${item.topicId}`,
+            currentUser.accessToken,
+            'GET',
+          )
+          setData((oldArray) => [
+            ...oldArray,
+            {
+              score: item.score,
+              userId: item.userId,
+              topicId: item.topicId,
+              topic: topic.data.title,
+              user: user.data.username,
+              email: user.data.email,
+            },
+          ])
         }
       }
     } catch (error) {
-      console.log(error)
       setError(error.message)
     }
   }
-  // const fetchDataUser = async () => {
-  //   try {
-  //     if (data) {
-
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
-  console.log('data user', users)
   const columns = [
     {
       title: 'Topic',
-      dataIndex: `topicId`,
-      width: 150,
-    },
-    {
-      title: 'Name',
-      dataIndex: 'userId',
-      width: 150,
+      key: `Topic`,
+      dataIndex: ['topic'],
     },
     {
       title: 'Score',
-      dataIndex: 'score',
-      width: 150,
+      key: `Score`,
+      dataIndex: ['score'],
+    },
+    {
+      title: 'User',
+      key: `User`,
+      dataIndex: ['user'],
+    },
+    {
+      title: 'Email',
+      key: `Email`,
+      dataIndex: ['email'],
+    },
+    {
+      title: 'Action',
+      key: `action`,
+      render: (_, record) => (
+        <Space size="middle">
+          <Link
+            to={`/topic/${record.topicId}/mark?score=${record.score}&userId=${record.userId}`}
+          >
+            Mark
+          </Link>
+        </Space>
+      ),
     },
   ]
-
   return (
-    <div>
-      <Table
-        columns={columns}
-        loading={loading}
-        dataSource={data}
-        // pagination={{ pageSize: 50 }}
-      />
-      ,
-    </div>
+    <>
+      <Row>
+        <Col xs={2}></Col>
+        <Col xs={20}>
+          <div className="topic-container">
+            <h3 className="heading-title">List Score</h3>
+            <Table
+              className="table-score"
+              columns={columns}
+              loading={loading}
+              dataSource={data}
+              rowKey={(state) => state.id}
+              size={'middle'}
+            />
+          </div>
+        </Col>
+        <Col xs={2}></Col>
+      </Row>
+    </>
   )
 }
-
 export default ListScore

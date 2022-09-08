@@ -7,8 +7,13 @@ import './ShortAnswer.css'
 const { TextArea } = Input
 const { Title } = Typography
 
-function ShortAnswer({ idx, question, userAnswer }) {
+function ShortAnswer({ idx, question, userAnswer, onBlur }) {
   const [value, setValue] = useState('')
+
+  const handleChange = (value) => {
+    setValue(value)
+    onBlur(value, question)
+  }
   return (
     <>
       {userAnswer ? (
@@ -41,15 +46,10 @@ function ShortAnswer({ idx, question, userAnswer }) {
       ) : (
         <div className="short-answer">
           <Title level={4}>{idx + '. ' + question.title}</Title>
-          <BodyInput
-            key="Body"
-            value={value}
-            onChange={() => setValue(value)}
-          />
+          <BodyInput key="Body" value={value} handleChange={handleChange} />
         </div>
       )}
     </>
   )
 }
-
 export default ShortAnswer
