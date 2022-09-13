@@ -42,6 +42,7 @@ function ListScore() {
               scoreId: item.id,
               userId: item.userId,
               topicId: item.topicId,
+              score: item.score,
               topic: topic.data.title,
               user: user.data.username,
               email: user.data.email,

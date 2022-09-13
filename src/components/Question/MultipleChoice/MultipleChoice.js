@@ -5,12 +5,12 @@ import './MultipleChoice.css'
 
 const { Title } = Typography
 
-function MultipleChoice({ idx, question, userAnswer, onChange }) {
+function MultipleChoice({ idx, question, userAnswer, onChange, sectionId }) {
   const [value, setValue] = useState('')
 
   const onChangeRadio = (e) => {
     setValue(e.target.value)
-    onChange && onChange(e.target.value, question)
+    onChange && onChange(e.target.value, question, sectionId)
   }
   return (
     <div className="multi-choice">

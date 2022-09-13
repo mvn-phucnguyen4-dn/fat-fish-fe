@@ -38,6 +38,7 @@ const HashTagInput = (props) => {
       const tag = { title: tagTitle, iconUrl: '' }
       const token = await auth.currentUser.getIdToken()
       const response = await fetchDataApi('hashtags', token, 'POST', tag)
+      toast.success('Saved', toastOptions)
       return response.data
     } catch (error) {
       setError(error.message)

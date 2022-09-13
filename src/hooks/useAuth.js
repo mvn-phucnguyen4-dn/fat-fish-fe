@@ -3,7 +3,7 @@ import useHttpClient from './useHttpClient'
 import { auth } from '../utils/initFirebase'
 import { signOut } from 'firebase/auth'
 
-let refreshTimer, logoutTimer
+let refreshTimer
 
 const useAuth = () => {
   const [token, setToken] = useState(false)
@@ -54,7 +54,7 @@ const useAuth = () => {
       'userData',
       JSON.stringify({
         id: storedData.storedDataId,
-        accessToken: storedData.accessToken,
+        accessToken: newToken,
         refreshToken: storedData.refreshToken,
         avatar: storedData.avatar,
         email: storedData.email,
@@ -76,15 +76,6 @@ const useAuth = () => {
     }
   }, [token, tokenExpirationDate])
 
-  // useEffect(() => {
-  //   if (token && tokenExpirationDate) {
-  //     const remainingTime = tokenExpirationDate.getTime() - new Date().getTime()
-  //     logoutTimer = setTimeout(logout, remainingTime)
-  //   } else {
-  //     clearTimeout(logoutTimer)
-  //   }
-  // }, [token, logout, tokenExpirationDate])
-
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem('userData'))
     if (storedData && new Date(storedData.expiration) > new Date()) {
@@ -94,6 +85,8 @@ const useAuth = () => {
         storedData,
         new Date(storedData.expiration),
       )
+    } else {
+      logout()
     }
   }, [login]) // [] => only run once when the component is mounted first time
   return { token, login, logout, userId, user, setUser }

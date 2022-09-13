@@ -6,13 +6,13 @@ import './EditTopic.css'
 import { Row, Col, Button, Tooltip } from 'antd'
 import 'antd/dist/antd.min.css'
 import ReactDragListView from 'react-drag-listview'
-import { Link, useParams, useHistory } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 import { fetchDataApi } from '../../utils/fetchDataApi'
 import useHttpClient from '../../hooks/useHttpClient'
 import ErrorModal from '../../components/Modal/ErrorModal'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { toastOptions, statePromise } from '../../utils/toastOption'
+import { toastOptions, toastOptionError } from '../../utils/toastOption'
 import { AuthContext } from '../../context/auth'
 
 const EditTopic = () => {
@@ -36,15 +36,7 @@ const EditTopic = () => {
   const fetchGetTopicById = async () => {
     try {
       const token = currentUser.accessToken
-      const response = await toast.promise(
-        fetchDataApi(`topics/${topicId}`, token, 'GET'),
-        {
-          pending: 'Getting topic',
-          success: 'Get topic success 👌',
-          error: 'Get topic fail 🤯',
-        },
-        toastOptions,
-      )
+      const response = await fetchDataApi(`topics/${topicId}`, token, 'GET')
       if (response.data) {
         const {
           title,
@@ -72,6 +64,7 @@ const EditTopic = () => {
         setTags([...response.data.hashtags])
         setUsers([...response.data.users])
         setUserId(userId)
+        toast.success('Sucess', toastOptions)
       } else {
         setError(response.message)
       }
@@ -83,11 +76,13 @@ const EditTopic = () => {
   const fetchUpdateTopic = async (updateTopic) => {
     try {
       const token = currentUser.accessToken
-      const response = await toast.promise(
-        fetchDataApi(`topics/${topicId}`, token, 'PUT', updateTopic),
-        statePromise,
-        toastOptions,
+      const response = await fetchDataApi(
+        `topics/${topicId}`,
+        token,
+        'PUT',
+        updateTopic,
       )
+      toast.success('Saved', toastOptions)
     } catch (error) {
       setError(error.message)
     }
@@ -96,15 +91,12 @@ const EditTopic = () => {
   const fetchPostSection = async () => {
     try {
       const token = currentUser.accessToken
-      const response = await toast.promise(
-        fetchDataApi('sections', token, 'POST', {
-          topicId: parseInt(topicId),
-          title: 'Section title',
-          questionIds: [],
-        }),
-        statePromise,
-        toastOptions,
-      )
+      const response = await fetchDataApi('sections', token, 'POST', {
+        topicId: parseInt(topicId),
+        title: 'Section title',
+        questionIds: [],
+      })
+      toast.success('Saved', toastOptions)
       return response.data
     } catch (error) {
       setError(error.message)
@@ -218,7 +210,7 @@ const EditTopic = () => {
       setTopic(updateTopic)
       history.push('/users/topic')
     } catch (error) {
-      console.log(error)
+      toast.error(error.message, toastOptionError)
     }
   }
 
@@ -284,7 +276,7 @@ const EditTopic = () => {
         </Col>
         <Col xs={0} sm={3} xl={5}></Col>
       </Row>
-      <ToastContainer />
+      <ToastContainer limit={1} />
     </>
   )
 }

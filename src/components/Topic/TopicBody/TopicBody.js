@@ -93,7 +93,7 @@ function TopicBody({ sections, topic }) {
       },
     )
   }
-  const onChange = (answerId, question) => {
+  const onChange = (answerId, question, sectionId) => {
     if (question.type === 'multi_choice') {
       const answerIndex = pushData.findIndex(
         (item) => item.questionId === question.id,
@@ -108,7 +108,7 @@ function TopicBody({ sections, topic }) {
           ...prev,
           {
             topicId: topic.id,
-            sectionId: data[0].id,
+            sectionId: sectionId,
             questionId: question.id,
             answerId: answerId ? answerId : null,
             answerText: null,
@@ -118,7 +118,7 @@ function TopicBody({ sections, topic }) {
     }
   }
 
-  const onBlur = (value, question) => {
+  const onBlur = (value, question, sectionId) => {
     const answerIndex = pushData.findIndex(
       (item) => item.questionId === question.id,
     )
@@ -131,7 +131,7 @@ function TopicBody({ sections, topic }) {
         ...prev,
         {
           topicId: topic.id,
-          sectionId: data[0].id,
+          sectionId: sectionId,
           questionId: question.id,
           answerText: value,
           answerId: null,
@@ -172,6 +172,7 @@ function TopicBody({ sections, topic }) {
                               idx={index + 1}
                               question={element}
                               onChange={onChange}
+                              sectionId={item.id}
                             />
                           ) : (
                             <ShortAnswer
@@ -179,6 +180,7 @@ function TopicBody({ sections, topic }) {
                               question={element}
                               onBlur={onBlur}
                               onChange={onChange}
+                              sectionId={item.id}
                             />
                           )}
                         </div>

@@ -9,7 +9,6 @@ import MarkShortAnswer from '../../Question/MarkShortAnswer/MarkShortAnswer'
 const { Text } = Typography
 
 function TopicRemark({ topic, sections, userAnswers }) {
-  console.log(userAnswers)
   return (
     <>
       {sections && (

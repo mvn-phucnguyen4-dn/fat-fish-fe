@@ -26,26 +26,16 @@ function TopicReview() {
         let topicData
         let userAnswerData
         if (!userId) {
-          topicData = await fetchDataApi(
-            `topics/${topicId}`,
-            token,
-            //  currentUser.accessToken,
-          )
-          userAnswerData = await fetchDataApi(
-            `topics/${topicId}/review`,
-            token,
-            // currentUser.accessToken,
-          )
+          topicData = await fetchDataApi(`topics/${topicId}`, token)
+          userAnswerData = await fetchDataApi(`topics/${topicId}/review`, token)
         } else {
           topicData = await fetchDataApi(
             `topics/${topicId}?userId=${userId}`,
             token,
-            //  currentUser.accessToken,
           )
           userAnswerData = await fetchDataApi(
             `topics/${topicId}/review?userId=${userId}`,
             token,
-            // currentUser.accessToken,
           )
         }
         userAnswerData && setUserAnswer(userAnswerData.data)

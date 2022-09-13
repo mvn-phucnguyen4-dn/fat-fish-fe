@@ -27,14 +27,16 @@ const Section = (props) => {
   const fetchUpdateSection = async (section) => {
     try {
       const token = currentUser.accessToken
-      const response = await toast.promise(
-        fetchDataApi(`sections/${section.id}`, token, 'PUT', {
+      const response = await fetchDataApi(
+        `sections/${section.id}`,
+        token,
+        'PUT',
+        {
           title: section.title,
           questionIds: section.questionIds,
-        }),
-        statePromise,
-        toastOptions,
+        },
       )
+      toast.success('Saved', toastOptions)
     } catch (error) {
       setError(error.message)
     }
@@ -43,18 +45,15 @@ const Section = (props) => {
   const fetchPostQuestion = async () => {
     try {
       const token = currentUser.accessToken
-      const response = await toast.promise(
-        fetchDataApi('questions', token, 'POST', {
-          type: 'multi_choice',
-          title: 'Question title',
-          imageUrl: '',
-          description: 'Question description',
-          score: 10,
-          isPrivate: false,
-        }),
-        statePromise,
-        toastOptions,
-      )
+      const response = await fetchDataApi('questions', token, 'POST', {
+        type: 'multi_choice',
+        title: 'Question title',
+        imageUrl: '',
+        description: 'Question description',
+        score: 10,
+        isPrivate: false,
+      })
+      toast.success('Saved', toastOptions)
       return response.data
     } catch (error) {
       setError(error.message)
@@ -112,7 +111,6 @@ const Section = (props) => {
       <ErrorModal error={error} onClose={clearError} />
       <div className="section">
         <TextareaAutosize
-          rows={1}
           className="title-section"
           autoSize
           value={section.title}

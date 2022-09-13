@@ -136,6 +136,27 @@ const createLoginForm = () => {
 //object representation of login form
 export const loginForm = createLoginForm()
 
+export const updatePasswordForm = {
+  password: {
+    ...createFormFieldConfig('Password', 'password', 'password'),
+    validationRules: [
+      requiredRule('password'),
+      minLengthRule('password', 6),
+      maxLengthRule('password', 20),
+    ],
+    key: '3',
+  },
+  confirmPassword: {
+    ...createFormFieldConfig('Confirm Password', 'confirmPassword', 'password'),
+    validationRules: [
+      requiredRule('confirmPassword'),
+      minLengthRule('confirmPassword', 6),
+      maxLengthRule('confirmPassword', 20),
+      passwordMatchRule(),
+    ],
+    key: '4',
+  },
+}
 export const newPostForm = {
   title: {
     ...createFormFieldConfig('Title', 'title', 'text'),

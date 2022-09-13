@@ -28,14 +28,9 @@ const GoogleLogin = (props) => {
         const user = users.find(
           (user) => user.email === userCredentials.user.email,
         )
+
         if (!user) {
-          deleteUser(userCredentials.user)
-          toast.error(
-            'Your user not exist in my system, Please sign up new account',
-            toastOptionError,
-          )
-          setIsLoading(false)
-          history.push('/auth/new-user')
+          history.push('/update-password')
         } else props.onLoginAPI()
       }
     } catch (error) {

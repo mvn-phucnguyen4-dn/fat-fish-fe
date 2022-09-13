@@ -15,6 +15,16 @@ export const BodyInput = (props) => {
       spellChecker: false,
       maxHeight: maxHeight || '100px',
       hideIcons: hideIcons,
+      toolbar: [
+        'bold',
+        'italic',
+        'fullscreen',
+        'table',
+        'code',
+        'unordered-list',
+        'clean-block',
+        'preview',
+      ],
     }
   }, [])
 

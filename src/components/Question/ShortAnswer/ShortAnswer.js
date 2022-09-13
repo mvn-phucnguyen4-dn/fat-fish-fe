@@ -7,12 +7,12 @@ import './ShortAnswer.css'
 const { TextArea } = Input
 const { Title } = Typography
 
-function ShortAnswer({ idx, question, userAnswer, onBlur }) {
+function ShortAnswer({ idx, question, userAnswer, onBlur, sectionId }) {
   const [value, setValue] = useState('')
 
   const handleChange = (value) => {
     setValue(value)
-    onBlur(value, question)
+    onBlur(value, question, sectionId)
   }
   return (
     <>

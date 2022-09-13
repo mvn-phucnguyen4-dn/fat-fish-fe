@@ -48,11 +48,13 @@ const Question = (props) => {
   const fetchUpdateQuestion = async (updateQuestion) => {
     try {
       const token = currentUser.accessToken
-      const response = await toast.promise(
-        fetchDataApi(`questions/${questionId}`, token, 'PUT', updateQuestion),
-        statePromise,
-        toastOptions,
+      const response = await fetchDataApi(
+        `questions/${questionId}`,
+        token,
+        'PUT',
+        updateQuestion,
       )
+      toast.success('Saved', toastOptions)
       if (response.data) {
         updateQuestions(response.data)
       }
@@ -64,13 +66,15 @@ const Question = (props) => {
   const fetchUpdateQuestionAnswer = async (updateAnswers) => {
     try {
       const token = currentUser.accessToken
-      const response = await toast.promise(
-        fetchDataApi(`questions/${questionId}/answers`, token, 'PUT', {
+      const response = await fetchDataApi(
+        `questions/${questionId}/answers`,
+        token,
+        'PUT',
+        {
           answers: updateAnswers,
-        }),
-        statePromise,
-        toastOptions,
+        },
       )
+      toast.success('Saved', toastOptions)
       return response.data
     } catch (error) {
       setError(error.message)
