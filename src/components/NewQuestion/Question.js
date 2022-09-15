@@ -4,12 +4,11 @@ import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
 import styles from './Question.module.css'
 import { Select, InputNumber, Button, Switch, Tooltip } from 'antd'
 import AnswerKeyModal from '../Modal/AnswerKeyModel'
-import { auth } from '../../utils/initFirebase'
 import { fetchDataApi } from '../../utils/fetchDataApi'
 import useHttpClient from '../../hooks/useHttpClient'
 import ErrorModal from '../Modal/ErrorModal'
 import { toast } from 'react-toastify'
-import { toastOptions, statePromise } from '../../utils/toastOption'
+import { toastOptions } from '../../utils/toastOption'
 import { AuthContext } from '../../context/auth'
 
 const { Option } = Select
@@ -19,7 +18,7 @@ const MAX_OPTION = 5
 
 const Question = (props) => {
   const [showModal, setShowModal] = useState(false)
-  const [question, setQuestion] = useState({})
+  const [question, setQuestion] = useState()
   const [answers, setAnswers] = useState([])
   const { currentUser } = useContext(AuthContext)
   const { removeQuestion, id: questionId, updateQuestions } = props
@@ -28,7 +27,8 @@ const Question = (props) => {
   useEffect(() => {
     const { description, title, imageUrl, score, type, isPrivate } =
       props.question
-    setQuestion({ description, title, imageUrl, score, type, isPrivate })
+    if (props.question)
+      setQuestion({ description, title, imageUrl, score, type, isPrivate })
 
     const newAnswers =
       props.question.answers &&
@@ -175,118 +175,126 @@ const Question = (props) => {
   return (
     <>
       <ErrorModal error={error} onClose={clearError} />
-      <AnswerKeyModal
-        onClose={() => setShowModal(false)}
-        show={showModal}
-        questionTitle={question.title}
-        questionId={questionId}
-        answers={answers}
-        changeIsRight={changeIsRight}
-      ></AnswerKeyModal>
-      <div className={`${styles['question-multiple-choice']}`}>
-        <BodyInput value={question.title} handleChange={changeTitle} />
-        <BodyInput
-          value={question.description}
-          handleChange={changeDescription}
-        />
-        {question.type === TYPE_MULTIPLE_CHOICE && (
-          <div className={styles['option-wrapper']}>
-            <div className={styles['list-option']}>
-              {answers &&
-                answers.map((answer, index) => (
-                  <div className={`${styles['option']}`} key={index}>
-                    <input type="radio" className={styles['radio']} />
-                    <div className={styles['brise-input']}>
-                      <input
-                        type="text"
-                        name="text"
-                        value={answer.answer}
-                        onChange={(e) => changeAnswer(e, index)}
-                        onBlur={(e) => blurAnswer(e, index)}
-                      />
-                      <span className={styles.line}></span>
-                    </div>
-                    {answers.length > 1 && (
-                      <Tooltip
-                        placement="bottom"
-                        title="Remove option"
-                        color="rgb(24 144 255)"
-                      >
-                        <DeleteOutlined
-                          onClick={(e) => removeAnswer(e, index)}
-                        />
-                      </Tooltip>
-                    )}
-                  </div>
-                ))}
-              <Tooltip
-                placement="right"
-                title="Add option"
-                color="rgb(24 144 255)"
-              >
-                <Button
-                  icon={<PlusOutlined />}
-                  onClick={addAnswer}
-                  className={styles['add-option']}
-                  shape="circle"
-                  size="small"
-                  disabled={answers.length === MAX_OPTION}
-                />
-              </Tooltip>
+      {question && (
+        <>
+          <AnswerKeyModal
+            onClose={() => setShowModal(false)}
+            show={showModal}
+            questionTitle={question.title}
+            questionId={questionId}
+            answers={answers}
+            changeIsRight={changeIsRight}
+          ></AnswerKeyModal>
+          <div className={`${styles['question-multiple-choice']}`}>
+            <BodyInput value={question.title} handleChange={changeTitle} />
+            <BodyInput
+              value={question.description}
+              handleChange={changeDescription}
+            />
+
+            {question.type === TYPE_MULTIPLE_CHOICE && (
+              <div className={styles['option-wrapper']}>
+                <div className={styles['list-option']}>
+                  {answers &&
+                    answers.map((answer, index) => (
+                      <div className={`${styles['option']}`} key={index}>
+                        <input type="radio" className={styles['radio']} />
+                        <div className={styles['brise-input']}>
+                          <input
+                            type="text"
+                            name="text"
+                            value={answer.answer}
+                            onChange={(e) => changeAnswer(e, index)}
+                            onBlur={(e) => blurAnswer(e, index)}
+                          />
+                          <span className={styles.line}></span>
+                        </div>
+                        {answers.length > 1 && (
+                          <Tooltip
+                            placement="bottom"
+                            title="Remove option"
+                            color="rgb(24 144 255)"
+                          >
+                            <DeleteOutlined
+                              onClick={(e) => removeAnswer(e, index)}
+                            />
+                          </Tooltip>
+                        )}
+                      </div>
+                    ))}
+                  <Tooltip
+                    placement="right"
+                    title="Add option"
+                    color="rgb(24 144 255)"
+                  >
+                    <Button
+                      icon={<PlusOutlined />}
+                      onClick={addAnswer}
+                      className={styles['add-option']}
+                      shape="circle"
+                      size="small"
+                      disabled={answers.length === MAX_OPTION}
+                    />
+                  </Tooltip>
+                </div>
+              </div>
+            )}
+            <div className={styles['question-footer']}>
+              <div className={styles['answer-key']}>
+                {question.type === TYPE_MULTIPLE_CHOICE && (
+                  <Button
+                    color="rgb(24 144 255)"
+                    onClick={(e) => {
+                      setShowModal(true)
+                    }}
+                  >
+                    Answer key
+                  </Button>
+                )}
+                <Tooltip
+                  placement="top"
+                  title={`${!question.isPrivate ? 'Close' : 'Open'} question`}
+                  color="rgb(24 144 255)"
+                >
+                  <Switch
+                    checked={question.isPrivate}
+                    onChange={changeIsPrivate}
+                  />
+                </Tooltip>
+              </div>
+              <div className={styles['action']}>
+                <Tooltip
+                  placement="top"
+                  title="Remove question"
+                  color="rgb(24 144 255)"
+                >
+                  <Button
+                    icon={<DeleteOutlined />}
+                    className={styles['delete-question']}
+                    onClick={handleRemoveQuestion}
+                  />
+                </Tooltip>
+                <Select
+                  style={{ width: 120 }}
+                  onChange={changeType}
+                  value={question.type}
+                >
+                  <Option value={TYPE_MULTIPLE_CHOICE}>Multiple choice</Option>
+                  <Option value={TYPE_TEXT_ANSWER}>Text answer</Option>
+                </Select>
+                <InputNumber
+                  min={0}
+                  max={10}
+                  step={1}
+                  value={question.score}
+                  onChange={changeScore}
+                  style={{ width: 60 }}
+                ></InputNumber>
+              </div>
             </div>
           </div>
-        )}
-        <div className={styles['question-footer']}>
-          <div className={styles['answer-key']}>
-            {question.type === TYPE_MULTIPLE_CHOICE && (
-              <Button
-                color="rgb(24 144 255)"
-                onClick={(e) => {
-                  setShowModal(true)
-                }}
-              >
-                Answer key
-              </Button>
-            )}
-            <Tooltip
-              placement="top"
-              title={`${!question.isPrivate ? 'Close' : 'Open'} question`}
-              color="rgb(24 144 255)"
-            >
-              <Switch checked={question.isPrivate} onChange={changeIsPrivate} />
-            </Tooltip>
-          </div>
-          <div className={styles['action']}>
-            <Tooltip
-              placement="top"
-              title="Remove question"
-              color="rgb(24 144 255)"
-            >
-              <Button
-                icon={<DeleteOutlined />}
-                className={styles['delete-question']}
-                onClick={handleRemoveQuestion}
-              />
-            </Tooltip>
-            <Select
-              style={{ width: 120 }}
-              onChange={changeType}
-              value={question.type}
-            >
-              <Option value={TYPE_MULTIPLE_CHOICE}>Multiple choice</Option>
-              <Option value={TYPE_TEXT_ANSWER}>Text answer</Option>
-            </Select>
-            <InputNumber
-              min={0}
-              max={10}
-              step={1}
-              value={question.score}
-              onChange={changeScore}
-              style={{ width: 60 }}
-            ></InputNumber>
-          </div>
-        </div>
-      </div>
+        </>
+      )}
     </>
   )
 }

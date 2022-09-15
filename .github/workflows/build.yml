@@ -18,6 +18,12 @@ jobs:
         with:
           node-version: 16.x
 
+      - name: Integrate ckeditor
+        run: cd ckeditor5 && npm i && npm run build 
+
+      - name: Back to project directory
+        run: cd ..
+
       - name: Install dependencies
         run: npm install
 

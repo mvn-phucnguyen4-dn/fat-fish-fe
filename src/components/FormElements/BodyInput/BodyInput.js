@@ -1,48 +1,57 @@
-import React, { useEffect, useState, useMemo } from 'react'
-import SimpleMDE from 'react-simplemde-editor'
-import 'easymde/dist/easymde.min.css'
+import React, { useEffect, useState } from 'react'
+import { CKEditor } from '@ckeditor/ckeditor5-react'
+import Editor from 'ckeditor5-custom-build/build/ckeditor'
+import './BodyInput.css'
 
 export const BodyInput = (props) => {
-  const [value, setValue] = useState('')
-  const { hideIcons, maxHeight } = props
+  const [value, setValue] = useState(props.value)
 
   useEffect(() => {
     setValue(props.value)
   }, [props.value])
 
-  const autofocusNoSpellcheckerOptions = useMemo(() => {
-    return {
-      spellChecker: false,
-      maxHeight: maxHeight || '100px',
-      hideIcons: hideIcons,
-      toolbar: [
-        'bold',
-        'italic',
-        'fullscreen',
-        'table',
-        'code',
-        'unordered-list',
-        'clean-block',
-        'preview',
-      ],
-    }
-  }, [])
+  const editorConfiguration = {
+    toolbar: [
+      'heading',
+      '|',
+      'bold',
+      'italic',
+      'link',
+      'bulletedList',
+      'numberedList',
+      '|',
+      'outdent',
+      'indent',
+      '|',
+      'uploadImage',
+      'blockQuote',
+      'insertTable',
+      'mediaEmbed',
+      'undo',
+      'redo',
+      '|',
+      'codeBlock',
+    ],
+  }
 
-  const onChange = (value) => {
+  const onChange = (event, editor) => {
+    const value = editor.getData()
     setValue(value)
   }
 
-  const onBlur = () => {
+  const onBlur = (event, editor) => {
     props.handleChange(value)
   }
 
   return (
-    <SimpleMDE
-      value={value}
-      onBlur={onBlur}
-      onChange={onChange}
-      onFocus={onfocus}
-      options={autofocusNoSpellcheckerOptions}
-    />
+    <div className="mark-down">
+      <CKEditor
+        editor={Editor}
+        data={value}
+        onBlur={onBlur}
+        onChange={onChange}
+        config={editorConfiguration}
+      />
+    </div>
   )
 }
