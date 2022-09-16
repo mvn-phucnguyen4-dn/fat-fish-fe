@@ -22,7 +22,7 @@ jobs:
         run: npm install
 
       - name: Build source
-        run: npm run build
+        run: NODE_OPTIONS="--max-old-space-size=8192" npm run  build
 
       - name: Check lint
         run: npm run lint
