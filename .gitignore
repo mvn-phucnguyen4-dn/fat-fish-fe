@@ -1,7 +1,8 @@
 # Dependency directories
 node_modules/
+
 build/
-ckeditor5/dist/
+dist/
 !ckeditor5/build/
 # dotenv environment variable files
 .env
