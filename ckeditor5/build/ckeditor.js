@@ -121,7 +121,8 @@
 /*!
  * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md.
- */ ;(function t(e, n) {
+ */
+;(function t(e, n) {
   if (typeof exports === 'object' && typeof module === 'object')
     module.exports = n()
   else if (typeof define === 'function' && define.amd) define([], n)
@@ -31143,21 +31144,17 @@
               { priority: 'low' },
             )
           })
-          t.conversion
-            .for('downcast')
-            .attributeToAttribute({
-              model: 'ckboxImageId',
-              view: 'data-ckbox-resource-id',
-            })
-          t.conversion
-            .for('upcast')
-            .elementToAttribute({
-              model: {
-                key: 'ckboxImageId',
-                value: (t) => t.getAttribute('data-ckbox-resource-id'),
-              },
-              view: { attributes: { 'data-ckbox-resource-id': /[\s\S]+/ } },
-            })
+          t.conversion.for('downcast').attributeToAttribute({
+            model: 'ckboxImageId',
+            view: 'data-ckbox-resource-id',
+          })
+          t.conversion.for('upcast').elementToAttribute({
+            model: {
+              key: 'ckboxImageId',
+              value: (t) => t.getAttribute('data-ckbox-resource-id'),
+            },
+            view: { attributes: { 'data-ckbox-resource-id': /[\s\S]+/ } },
+          })
         }
         _initFixers() {
           const t = this.editor
@@ -34006,12 +34003,10 @@
         }
         _setupDropMarker() {
           const t = this.editor
-          t.conversion
-            .for('editingDowncast')
-            .markerToHighlight({
-              model: 'drop-target',
-              view: { classes: ['ck-clipboard-drop-target-range'] },
-            })
+          t.conversion.for('editingDowncast').markerToHighlight({
+            model: 'drop-target',
+            view: { classes: ['ck-clipboard-drop-target-range'] },
+          })
           t.conversion.for('editingDowncast').markerToElement({
             model: 'drop-target',
             view: (e, { writer: n }) => {
@@ -34782,13 +34777,11 @@
           }
         }
         _addDefaultH1Conversion(t) {
-          t.conversion
-            .for('upcast')
-            .elementToElement({
-              model: 'heading1',
-              view: 'h1',
-              converterPriority: c.get('low') + 1,
-            })
+          t.conversion.for('upcast').elementToElement({
+            model: 'heading1',
+            view: 'h1',
+            converterPriority: c.get('low') + 1,
+          })
         }
       }
       function sS(t) {
@@ -36652,12 +36645,10 @@
           const n = t.plugins.get('ImageUtils')
           const o = t.plugins.get('ImageCaptionUtils')
           const i = t.t
-          t.conversion
-            .for('upcast')
-            .elementToElement({
-              view: (t) => o.matchImageCaptionViewElement(t),
-              model: 'caption',
-            })
+          t.conversion.for('upcast').elementToElement({
+            view: (t) => o.matchImageCaptionViewElement(t),
+            model: 'caption',
+          })
           t.conversion.for('dataDowncast').elementToElement({
             model: 'caption',
             view: (t, { writer: e }) => {
@@ -38426,18 +38417,14 @@
           t.conversion
             .for('dataDowncast')
             .attributeToElement({ model: 'linkHref', view: XB })
-          t.conversion
-            .for('editingDowncast')
-            .attributeToElement({
-              model: 'linkHref',
-              view: (t, e) => XB(tP(t), e),
-            })
-          t.conversion
-            .for('upcast')
-            .elementToAttribute({
-              view: { name: 'a', attributes: { href: true } },
-              model: { key: 'linkHref', value: (t) => t.getAttribute('href') },
-            })
+          t.conversion.for('editingDowncast').attributeToElement({
+            model: 'linkHref',
+            view: (t, e) => XB(tP(t), e),
+          })
+          t.conversion.for('upcast').elementToAttribute({
+            view: { name: 'a', attributes: { href: true } },
+            model: { key: 'linkHref', value: (t) => t.getAttribute('href') },
+          })
           t.commands.add('link', new cP(t))
           t.commands.add('unlink', new lP(t))
           const e = nP(t.t, oP(t.config.get('link.decorators')))
@@ -38501,12 +38488,10 @@
                 }
               },
             })
-            e.conversion
-              .for('upcast')
-              .elementToAttribute({
-                view: { name: 'a', ...t._createPattern() },
-                model: { key: t.id },
-              })
+            e.conversion.for('upcast').elementToAttribute({
+              view: { name: 'a', ...t._createPattern() },
+              model: { key: t.id },
+            })
           })
         }
         _enableLinkOpen() {
@@ -38997,24 +38982,20 @@
           this._balloon = t.plugins.get(rv)
           this._createToolbarLinkButton()
           this._enableUserBalloonInteractions()
-          t.conversion
-            .for('editingDowncast')
-            .markerToHighlight({
-              model: LP,
-              view: { classes: ['ck-fake-link-selection'] },
-            })
-          t.conversion
-            .for('editingDowncast')
-            .markerToElement({
-              model: LP,
-              view: {
-                name: 'span',
-                classes: [
-                  'ck-fake-link-selection',
-                  'ck-fake-link-selection_collapsed',
-                ],
-              },
-            })
+          t.conversion.for('editingDowncast').markerToHighlight({
+            model: LP,
+            view: { classes: ['ck-fake-link-selection'] },
+          })
+          t.conversion.for('editingDowncast').markerToElement({
+            model: LP,
+            view: {
+              name: 'span',
+              classes: [
+                'ck-fake-link-selection',
+                'ck-fake-link-selection_collapsed',
+              ],
+            },
+          })
         }
         destroy() {
           super.destroy()
