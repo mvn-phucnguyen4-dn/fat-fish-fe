@@ -3,10 +3,11 @@
   padding: 10px;
   margin-bottom: 10px;
   border-radius: 5px;
+  color: #000
 }
 
 .btn-radio {
-  font-size: large;
+  font-size: small;
 }
 
 .ant-checkbox-group-item {
@@ -71,4 +72,8 @@
 
 .correct_answer > .ant-radio-wrapper {
   pointer-events: none;
+}
+
+.mardown-output img {
+  max-width: 100% !important;
 }

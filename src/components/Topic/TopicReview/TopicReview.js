@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { Button, List, Typography } from 'antd'
-import ReactDragListView from 'react-drag-listview'
+import React from 'react'
+import { List, Typography } from 'antd'
 import MultipleChoice from '../../Question/MultipleChoice/MultipleChoice'
 import ShortAnswer from '../../Question/ShortAnswer/ShortAnswer'
 import './TopicReview.css'

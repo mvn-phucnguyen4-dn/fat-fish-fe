@@ -1,51 +1,74 @@
-import { CloseOutlined, CheckOutlined } from '@ant-design/icons/lib/icons'
-import { Typography, Input } from 'antd'
-import React, { useState } from 'react'
+import { Input } from 'antd'
+import React, { useEffect, useState } from 'react'
 import { BodyInput } from '../../FormElements/BodyInput/BodyInput'
 import './ShortAnswer.css'
-
-const { TextArea } = Input
-const { Title } = Typography
+import hljs from 'highlight.js'
+import 'highlight.js/styles/a11y-dark.css'
 
 function ShortAnswer({ idx, question, userAnswer, onBlur, sectionId }) {
   const [value, setValue] = useState('')
+
+  useEffect(() => {
+    updateCodeSyntaxHighlighting()
+  }, [])
+
+  const updateCodeSyntaxHighlighting = () => {
+    document.querySelectorAll('pre code').forEach((block) => {
+      hljs.highlightBlock(block)
+    })
+  }
 
   const handleChange = (value) => {
     setValue(value)
     onBlur(value, question, sectionId)
   }
+
   return (
     <>
       {userAnswer ? (
         <div className="short-answer">
-          <Title
+          <div
             className={`${userAnswer.isRight ? 'correct' : 'incorrect'}`}
             level={4}
           >
-            <p>
-              {userAnswer.isRight ? <CheckOutlined /> : <CloseOutlined />}
-              {'   '}
-              {question.title}
-            </p>
-          </Title>
-          <TextArea
-            className="short-answer-input"
-            type="text"
-            value={userAnswer.answerText}
-            readOnly
-            autoSize
-          ></TextArea>
+            <div>
+              <div
+                className="mardown-output"
+                dangerouslySetInnerHTML={{
+                  __html: question.title,
+                }}
+              ></div>
+            </div>
+          </div>
+          <div
+            className="short-answer-input mardown-output"
+            dangerouslySetInnerHTML={{
+              __html: userAnswer.answerText,
+            }}
+          ></div>
           {!userAnswer.isRight && (
             <>
               <p style={{ marginTop: '10px', color: 'black' }}>
-                <b>Description : </b> <span>{question.description}</span>
+                <b>Description : </b>
+                <div
+                  className="mardown-output"
+                  dangerouslySetInnerHTML={{
+                    __html: question.description,
+                  }}
+                ></div>
               </p>
             </>
           )}
         </div>
       ) : (
         <div className="short-answer">
-          <Title level={4}>{idx + '. ' + question.title}</Title>
+          <div
+            className="mardown-output"
+            dangerouslySetInnerHTML={{
+              __html: question.title,
+            }}
+          ></div>
+
           <BodyInput key="Body" value={value} handleChange={handleChange} />
         </div>
       )}

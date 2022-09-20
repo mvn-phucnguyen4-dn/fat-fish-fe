@@ -1,33 +1,49 @@
 import { CloseOutlined, CheckOutlined } from '@ant-design/icons/lib/icons'
 import { Radio, Space, Typography } from 'antd'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './MultipleChoice.css'
+import hljs from 'highlight.js' // import hljs library
+import 'highlight.js/styles/a11y-dark.css'
 
 const { Title } = Typography
 
 function MultipleChoice({ idx, question, userAnswer, onChange, sectionId }) {
   const [value, setValue] = useState('')
 
+  useEffect(() => {
+    updateCodeSyntaxHighlighting()
+  }, [])
+
+  const updateCodeSyntaxHighlighting = () => {
+    document.querySelectorAll('pre code').forEach((block) => {
+      hljs.highlightBlock(block)
+    })
+  }
+
   const onChangeRadio = (e) => {
     setValue(e.target.value)
     onChange && onChange(e.target.value, question, sectionId)
   }
+
   return (
     <div className="multi-choice">
       {userAnswer ? (
         <div>
           {question && (
             <>
-              <Title
+              <div
                 className={`${userAnswer.isRight ? 'correct' : 'incorrect'}`}
                 level={4}
               >
-                <p>
-                  {userAnswer.isRight ? <CheckOutlined /> : <CloseOutlined />}
-                  {'   '}
-                  {question.title}
-                </p>
-              </Title>
+                <div>
+                  <div
+                    className="mardown-output"
+                    dangerouslySetInnerHTML={{
+                      __html: question.title,
+                    }}
+                  ></div>
+                </div>
+              </div>
               <Radio.Group className="radio-group" value={userAnswer.answerId}>
                 <Space className="radio-item" direction="vertical">
                   {question.answers.map((item) => {
@@ -74,11 +90,6 @@ function MultipleChoice({ idx, question, userAnswer, onChange, sectionId }) {
                   <p style={{ color: 'black' }}>Correct answer</p>{' '}
                   {question.answers.map(
                     (item) =>
-                      // <Radio.Group
-                      //   className="radio-group"
-                      //   value={item.answer}
-                      //   key={item.id}
-                      // >
                       item.isRight && (
                         <Radio
                           value={item.answer}
@@ -88,10 +99,6 @@ function MultipleChoice({ idx, question, userAnswer, onChange, sectionId }) {
                           {item.answer}
                         </Radio>
                       ),
-                    // </Radio.Group>
-                    // <Typography key={item.id}>
-                    //   {item.isRight && item.answer}
-                    // </Typography>
                   )}
                 </div>
               )}
@@ -102,7 +109,13 @@ function MultipleChoice({ idx, question, userAnswer, onChange, sectionId }) {
         <div>
           {question && (
             <>
-              <Title level={4}>{idx + '. ' + question.title}</Title>
+              <div
+                className="mardown-output"
+                dangerouslySetInnerHTML={{
+                  __html: question.title,
+                }}
+              ></div>
+
               <Radio.Group onChange={onChangeRadio}>
                 <Space direction="vertical">
                   {question.answers.map((item) => (

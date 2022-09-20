@@ -1,13 +1,13 @@
-import { CloseOutlined, CheckOutlined } from '@ant-design/icons/lib/icons'
 import { Typography, Input, Switch } from 'antd'
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { useLocation } from 'react-router-dom/cjs/react-router-dom.min'
 import { AuthContext } from '../../../context/auth'
 import { fetchDataApi } from '../../../utils/fetchDataApi'
 import './MarkShortAnswer.css'
+import hljs from 'highlight.js'
+import 'highlight.js/styles/a11y-dark.css'
 
-const { TextArea } = Input
-const { Title, Paragraph } = Typography
+const { Paragraph } = Typography
 
 function useQuery() {
   const { search } = useLocation()
@@ -18,6 +18,11 @@ function useQuery() {
 function MarkShortAnswer({ idx, topic, question, userAnswer }) {
   const query = useQuery()
   const { currentUser } = useContext(AuthContext)
+
+  useEffect(() => {
+    updateCodeSyntaxHighlighting()
+  }, [])
+
   const onChange = async (checked) => {
     await fetchDataApi(
       `topics/${topic.id}/user-answers/${userAnswer.id}`,
@@ -31,29 +36,41 @@ function MarkShortAnswer({ idx, topic, question, userAnswer }) {
       'PUT',
     )
   }
+
+  const updateCodeSyntaxHighlighting = () => {
+    document.querySelectorAll('pre code').forEach((block) => {
+      hljs.highlightBlock(block)
+    })
+  }
+
   return (
     <div className="short-answer">
-      <Title
+      <div
         className={`${userAnswer.isRight ? 'correct' : 'incorrect'}`}
         level={4}
       >
-        <p>
-          {userAnswer.isRight ? <CheckOutlined /> : <CloseOutlined />}
-          {'   '}
-          {question.title}
-        </p>
-      </Title>
-      <TextArea
-        className="short-answer-input"
-        type="text"
-        value={userAnswer.answerText}
-        readOnly
-        autoSize
-      ></TextArea>
+        <div
+          className="mardown-output"
+          dangerouslySetInnerHTML={{
+            __html: question.title,
+          }}
+        ></div>
+      </div>
+      <div
+        className="short-answer-input mardown-output"
+        dangerouslySetInnerHTML={{
+          __html: userAnswer.answerText,
+        }}
+      ></div>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <Paragraph style={{ maxWidth: '80%' }}>
           <b>Description: </b>
-          {question.description}
+          <div
+            className="mardown-output"
+            dangerouslySetInnerHTML={{
+              __html: question.description,
+            }}
+          ></div>
         </Paragraph>
         <Switch
           checkedChildren="true"

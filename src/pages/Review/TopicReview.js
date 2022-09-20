@@ -17,6 +17,7 @@ function TopicReview() {
   const { topicId } = useParams()
   const { search } = useLocation()
   const url = React.useMemo(() => new URLSearchParams(search), [search])
+  const score = new URLSearchParams(search).get('score')
 
   useEffect(() => {
     const token = JSON.parse(localStorage.getItem('userData')).accessToken
@@ -54,7 +55,7 @@ function TopicReview() {
         <Col xs={24} sm={18} xl={14}>
           {topic && (
             <>
-              <TopicHeader topic={topic} score={20} />
+              <TopicHeader topic={topic} score={score} />
               <TopicBodyReview
                 sections={topic.sections}
                 userAnswers={userAnswer}
