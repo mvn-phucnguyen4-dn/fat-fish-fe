@@ -69,7 +69,7 @@ const useAuth = () => {
   useEffect(() => {
     if (token && tokenExpirationDate) {
       const remainingTime =
-        tokenExpirationDate.getTime() - new Date().getTime() - 1000 * 60 // refresh token every 59 minute
+        tokenExpirationDate.getTime() - new Date().getTime() - 1000 * 60 * 2 // refresh token every 59 minute
       refreshTimer = setTimeout(refreshToken, remainingTime)
     } else {
       clearTimeout(refreshTimer)

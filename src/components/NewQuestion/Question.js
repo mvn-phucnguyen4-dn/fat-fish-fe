@@ -56,7 +56,7 @@ const Question = (props) => {
       )
       toast.success('Saved', toastOptions)
       if (response.data) {
-        updateQuestions(response.data)
+        updateQuestions({ ...response.data, answers })
       }
     } catch (error) {
       setError(error.message)

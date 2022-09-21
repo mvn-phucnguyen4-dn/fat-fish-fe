@@ -65,7 +65,7 @@ function TopicBody({ sections, topic }) {
         if (response.meta && response.meta.submit_flag) {
           setIsShowAlert(true)
         }
-        history.push({ pathname: '/result', state: { topic: topic.title } })
+        history.push({ pathname: '/result', state: { topic: topic } })
       },
       onCancel() {},
     })

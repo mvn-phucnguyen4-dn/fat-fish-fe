@@ -5,15 +5,17 @@ import TopicHeader from '../../components/Topic/TopicHeader/TopicHeader'
 import TopicBody from '../../components/Topic/TopicBody/TopicBody'
 import useHttpClient from '../../hooks/useHttpClient'
 import { AuthContext } from '../../context/auth'
-import { useParams } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 import { fetchDataApi } from '../../utils/fetchDataApi'
 import './Topic.css'
+import ErrorModal from '../../components/Modal/ErrorModal'
 
 function Quiz() {
-  const { setError } = useHttpClient()
+  const { setError, clearError, error } = useHttpClient()
   const [data, setData] = useState()
   const { currentUser } = useContext(AuthContext)
   const { topicId } = useParams()
+  const history = useHistory()
 
   useEffect(() => {
     const fetchTopics = async () => {
@@ -22,7 +24,15 @@ function Quiz() {
           `topics/${topicId}`,
           currentUser.accessToken,
         )
-        response && setData(response.data)
+        if (response.meta.submit_flag) {
+          setError('Opp! You have done this topic!!')
+          setTimeout(() => {
+            history.push({
+              pathname: '/result',
+              state: { topic: response.data },
+            })
+          }, 3000)
+        } else setData(response.data)
       } catch (error) {
         setError(error.message)
       }
@@ -32,6 +42,7 @@ function Quiz() {
 
   return (
     <>
+      <ErrorModal error={error} onClose={clearError} />
       <Row>
         <Col xs={0} sm={3} xl={5}></Col>
         <Col

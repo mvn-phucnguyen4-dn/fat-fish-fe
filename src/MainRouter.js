@@ -17,6 +17,7 @@ import AfterSubmitAnswer from './components/Topic/Result/AfterSubmitAnswer'
 import ListTopic from './pages/ListTopic/ListTopic'
 import MarkScore from './pages/MarkScore/MarkScore'
 import ChangePassword from './pages/ChangePassword/ChangePassword'
+import UserAnswer from './pages/UserAnswer/UserAnswer'
 
 const MainRouter = ({ token }) => {
   let routes
@@ -62,6 +63,9 @@ const MainRouter = ({ token }) => {
           </Route>
           <Route path="/result" exact>
             <AfterSubmitAnswer />
+          </Route>
+          <Route path="/topic/:topicId/user-answer" exact>
+            <UserAnswer />
           </Route>
           <Redirect to="/auth" />
         </Switch>

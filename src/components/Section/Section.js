@@ -8,7 +8,7 @@ import { fetchDataApi } from '../../utils/fetchDataApi'
 import useHttpClient from '../../hooks/useHttpClient'
 import ErrorModal from '../Modal/ErrorModal'
 import { toast } from 'react-toastify'
-import { toastOptions, statePromise } from '../../utils/toastOption'
+import { toastOptions } from '../../utils/toastOption'
 import { AuthContext } from '../../context/auth'
 
 const Section = (props) => {
