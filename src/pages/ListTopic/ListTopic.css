@@ -9,3 +9,10 @@
   justify-content: space-between;
   align-items: center;
 }
+
+.topic-header-right {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}

@@ -1,5 +1,14 @@
 import { PlusOutlined } from '@ant-design/icons'
-import { Button, Col, List, Pagination, Row, Skeleton, Typography } from 'antd'
+import {
+  Button,
+  Col,
+  List,
+  Modal,
+  Pagination,
+  Row,
+  Table,
+  Typography,
+} from 'antd'
 import React, { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import AddTopicModal from '../../components/Modal/AddTopicModal'
@@ -8,13 +17,18 @@ import { AuthContext } from '../../context/auth'
 import useHttpClient from '../../hooks/useHttpClient'
 import { fetchDataApi } from '../../utils/fetchDataApi'
 import './ListTopic.css'
+import * as XLSX from 'xlsx'
 
 function ListTopic() {
   const { setError } = useHttpClient()
   const [myTopic, setMyTopic] = useState({})
   const [scores, setScores] = useState([])
   const [renderData, setRenderData] = useState([])
+  const [columns, setColumns] = useState([])
+  const [data, setData] = useState([])
   const [isModalVisible, setIsModalVisible] = useState(false)
+  const [open, setOpen] = useState(false)
+  const [confirmLoading, setConfirmLoading] = useState(false)
   const { currentUser } = useContext(AuthContext)
   const TOPIC_SIZE = 6
 
@@ -61,8 +75,166 @@ function ListTopic() {
     setRenderData(response.data)
   }
 
+  const prepareData = async () => {
+    const submitData = []
+    const sectionTitles = new Set(data.map((section) => section.section_title))
+
+    for (const title of sectionTitles) {
+      const questions = data.filter(
+        (section) => section.section_title === title,
+      )
+      console.log(questions)
+      const section = { title, questions: [] }
+      for (const question of questions) {
+        const questionObj = {
+          userId: currentUser.userId,
+          title: question.question_title,
+          description: question.question_description,
+          score: question.question_score,
+          isPrivate: question.is_private,
+          type: question.question_type,
+          answers: [],
+        }
+        const propertyAnswer = [
+          'answer1',
+          'answer2',
+          'answer3',
+          'answer4',
+          'answer5',
+        ]
+        for (const property in question) {
+          if (propertyAnswer.includes(property) && question[property].trim()) {
+            questionObj.answers.push({
+              answer: question[property],
+              isRight: question[property] === question.correct_answer,
+            })
+          }
+        }
+        section.questions.push(questionObj)
+      }
+      submitData.push(section)
+    }
+
+    try {
+      console.log(submitData)
+      const response = await fetchDataApi(
+        `topics/import`,
+        currentUser.accessToken,
+        'POST',
+        { sections: submitData },
+      )
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  // process CSV data
+  const processData = (dataString) => {
+    const dataStringLines = dataString.split(/\r\n|\n/)
+    const headers = dataStringLines[0].split(
+      /,(?![^"]*"(?:(?:[^"]*"){2})*[^"]*$)/,
+    )
+
+    const list = []
+    for (let i = 1; i < dataStringLines.length; i++) {
+      const row = dataStringLines[i].split(
+        /,(?![^"]*"(?:(?:[^"]*"){2})*[^"]*$)/,
+      )
+      if (headers && row.length == headers.length) {
+        const obj = {}
+        for (let j = 0; j < headers.length; j++) {
+          let d = row[j]
+          if (d.length > 0) {
+            if (d[0] == '"') d = d.substring(1, d.length - 1)
+            if (d[d.length - 1] == '"') d = d.substring(d.length - 2, 1)
+          }
+          if (headers[j]) {
+            obj[headers[j]] = d
+          }
+        }
+
+        // remove the blank rows
+        if (Object.values(obj).filter((x) => x).length > 0) {
+          list.push(obj)
+        }
+      }
+    }
+
+    // prepare columns list from headers
+    const columns = headers.map((c) => ({
+      title: c,
+      key: c,
+      dataIndex: c,
+    }))
+
+    setData(list)
+    setColumns(columns)
+  }
+
+  const handleUpload = (e) => {
+    const file = e.target.files[0]
+    const reader = new FileReader()
+
+    // Event listener on reader when the file
+    // loads, we parse it and set the data.
+    reader.onload = async (evt) => {
+      const bstr = evt.target.result
+      const wb = XLSX.read(bstr, { type: 'binary' })
+      /* Get first worksheet */
+      const wsname = wb.SheetNames[0]
+      const ws = wb.Sheets[wsname]
+      /* Convert array of arrays */
+      const data = XLSX.utils.sheet_to_csv(ws, { header: 1 })
+      processData(data)
+    }
+
+    reader.readAsBinaryString(file)
+  }
+
+  const showModal = () => {
+    setOpen(true)
+  }
+
+  const handleOk = async () => {
+    await prepareData()
+    setConfirmLoading(true)
+    setTimeout(() => {
+      setOpen(false)
+      setConfirmLoading(false)
+    }, 2000)
+  }
+
+  const handleCancel = () => {
+    console.log('Clicked cancel button')
+    setOpen(false)
+  }
   return (
     <>
+      <Modal
+        title="Upload File"
+        visible={open}
+        onOk={handleOk}
+        confirmLoading={confirmLoading}
+        onCancel={handleCancel}
+        width={1000}
+      >
+        <input
+          className=""
+          onChange={handleUpload}
+          name="file"
+          type="File"
+          accept=".csv,.xlsx,.xls"
+          style={{ marginBottom: '10px' }}
+        />
+        <Table
+          columns={columns}
+          dataSource={data}
+          scroll={{
+            x: 'calc(1000px + 50%)',
+            y: 240,
+          }}
+        />
+      </Modal>
       <Row>
         <Col xs={2}></Col>
         <Col xs={20}>
@@ -71,12 +243,18 @@ function ListTopic() {
               header={
                 <div className="topic-header">
                   <Typography.Title level={2}>Your topic</Typography.Title>
-                  <Button
-                    shape="circle"
-                    icon={<PlusOutlined />}
-                    size="large"
-                    onClick={() => setIsModalVisible(true)}
-                  />
+
+                  <div className="topic-header-right">
+                    <Button type="primary" onClick={showModal}>
+                      Import CSV
+                    </Button>
+                    <Button
+                      shape="circle"
+                      icon={<PlusOutlined />}
+                      size="large"
+                      onClick={() => setIsModalVisible(true)}
+                    />
+                  </div>
                 </div>
               }
               itemLayout="vertical"
