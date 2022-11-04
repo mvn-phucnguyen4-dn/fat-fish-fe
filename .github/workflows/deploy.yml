@@ -47,40 +47,14 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@aaf69d68aa3fb14c1d5a6be9ac61fe15b48453a2
 
-      - name: Make envfile
-        uses: SpicyPizza/create-envfile@v1.3
+      - uses: actions/setup-node@v1
         with:
-          #Image tag
-          envkey_NODE_IMAGE: node:16.16.0-alpine
-          envkey_DB_IMAGE: postgres:14.4-alpine
+          node-version: 16.x
 
-          # App
-          envkey_NODE_ENV: local
-          envkey_APP_PORT: 3000
-          envkey_APP_NAME: team1
-
-          # Database
-          envkey_DB_NAME: team1
-          envkey_DB_HOST: db
-          envkey_DB_USER: postgres
-          envkey_DB_PASS: password
-          envkey_DB_PORT: 5432
-
-          # Firebase
-          envkey_PROJECT_ID: nodejs-community
-
-          # S3
-          envkey_MINIO_IMAGE: minio/minio
-          envkey_MINIO_NAME: team1
-          envkey_MINIO_MAIN_PORT: 9000
-          envkey_MINIO_CONSOLE_PORT: 9001
-          envkey_MINIO_USER: admin
-          envkey_MINIO_PASSWORD: password
-          envkey_MINIO_BUCKET_NAME: team1-bucket
-          envkey_MINIO_URL: http://localhost
-          some_other_variable: foobar
-          file_name: .env
-          fail_on_empty: false
+      - name: Install dependencies
+        run: npm install  
+      - name: Build source
+        run: NODE_OPTIONS="--max-old-space-size=8192" npm run build
 
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
